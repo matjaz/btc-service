@@ -38,7 +38,7 @@ export default function payRequest(app, options) {
     if (!user) {
       throw new Error("Missing user");
     }
-    ctx.value.push(["text/plain", `Satoshis for ${user.username}`]);
+    ctx.value.push(["text/plain", `Sats for ${user.username}`]);
     if (user.hasEmail) {
       const email = `${user.username}@${user.domain}`;
       ctx.value.push(["text/email", email]);

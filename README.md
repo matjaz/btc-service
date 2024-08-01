@@ -16,7 +16,7 @@ Extensible via modules.
 
 ### Backends
 
-- [NWC](https://nwc.dev/)
+- [Nostr Wallet Connect (NWC)](https://nwc.dev/)
 - LUD-16 proxy forward - enables sats forwarding
 
 ### Supported modules
