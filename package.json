@@ -10,7 +10,8 @@
     "lint:js": "eslint src --max-warnings 0",
     "lint:js:fix": "eslint src --fix",
     "format": "prettier --check '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
-    "format:fix": "prettier --loglevel silent --write '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'"
+    "format:fix": "prettier --loglevel silent --write '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
+    "prepare": "husky init"
   },
   "author": "Matjaz Lipus",
   "license": "MIT",
@@ -30,6 +31,7 @@
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.8.0",
+    "husky": "^9.1.4",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.3"
   }
