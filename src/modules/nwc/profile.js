@@ -1,5 +1,5 @@
 export default function (app) {
-  app.get("/nwc/:username", async (req, res) => {
+  app.get("/nwc/p/:username", async (req, res) => {
     const client = await req.user.nwc();
     try {
       const info = await client.getInfo();

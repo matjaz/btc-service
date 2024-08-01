@@ -3,7 +3,8 @@ import App from "../src/app.js";
 const modules = [
   // order is important
   "cors",
-  // 'nwc',
+  // "nwc/profile",
+  // "nwc/connect",
 
   // lnurlp
   "luds/lud-06", // payRequest
