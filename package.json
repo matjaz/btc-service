@@ -1,0 +1,37 @@
+{
+  "name": "btc-service",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node examples/server.js",
+    "test": "npm run lint:js && npm run format",
+    "lint": "npm run lint:js && npm run format:fix",
+    "lint:js": "eslint src --max-warnings 0",
+    "lint:js:fix": "eslint src --fix",
+    "format": "prettier --check '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
+    "format:fix": "prettier --loglevel silent --write '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
+    "prepare": "husky install"
+  },
+  "author": "Matjaz Lipus",
+  "license": "MIT",
+  "description": "Modular BTC service supporting various LUDS, NIPS and custom modules.",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@getalby/sdk": "^3.6.1",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1",
+    "websocket-polyfill": "^0.0.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.8.0",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.8.0",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.3"
+  }
+}
