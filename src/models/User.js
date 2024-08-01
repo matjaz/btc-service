@@ -4,7 +4,7 @@ import { createModel } from "../lib/db.js";
 import { lud16URL } from "../lib/utils.js";
 import Payment from "./Payment.js";
 
-export default await createModel(
+const User = await createModel(
   "User",
   {
     username: {
@@ -51,7 +51,7 @@ export default await createModel(
   },
   {
     methods: {
-      get lud16() {
+      lud16() {
         return lud16URL(this.username, this.domain);
       },
       async nwc() {
@@ -124,3 +124,7 @@ export default await createModel(
     },
   },
 );
+
+User.schema.index({ username: 1, domain: 1 }, { unique: true });
+
+export default User;
