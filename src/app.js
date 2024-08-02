@@ -27,7 +27,7 @@ export default class App {
         if (user) {
           req.user = user;
         } else {
-          const err = error("Username not found");
+          const err = error("Not found");
           res.status(404).send(err);
           return;
         }
