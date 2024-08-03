@@ -26,14 +26,14 @@ const modules = [
       // maxLength: 10,
     },
   ],
-  "luds/lud-16", // internetIdentifier
+  "luds/lud-16", // internet identifier
   "luds/lud-20", // longDesc
   "luds/lud-21", // verify
 
+  "nips/nip-05", // Nostr internet identifier
+
   // 'luds/lud-04', // TODO
   // 'luds/lud-10', // NWC does not support preimage
-
-  // 'nips/nip-05', // TODO
 ];
 
 const app = new App({ modules });

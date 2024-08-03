@@ -114,6 +114,9 @@ const User = await createModel(
         return this.findOne(search);
       },
       findNostrVerifiedByUsername(username, domain) {
+        if (!/^[a-z0-9-_.]+$/i.test(username)) {
+          return null;
+        }
         const search = {
           username,
           domain,
