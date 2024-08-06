@@ -6,8 +6,6 @@ export default function withdrawRequest(app, options) {
   const minWithdrawable = (options && options.minWithdrawable) || 1000; // milisats
   const maxWithdrawable = (options && options.maxWithdrawable) || 100000000; // milisats
 
-  app.require("nwc", "pay_invoice");
-
   app.addTransformer("lnurlw", async function createWithdrawRequest(ctx) {
     const { req, user } = ctx;
     if (!req) {
