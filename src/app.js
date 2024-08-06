@@ -19,6 +19,8 @@ export default class App {
   }
 
   configure() {
+    this.app.set('view engine', 'pug');
+    this.app.set('views', './src/views')
     this.app.disable("x-powered-by");
     this.app.param("username", async function (req, res, next, username) {
       try {

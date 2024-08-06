@@ -30,6 +30,8 @@ Extensible via modules.
 - ✅ LUD-21 - `verify`
 - ✅ NIP-05 - `Nostr internet identifier`
 
+- ✅ Public user profile page, with send sats form
+
 ### In progress
 
 - LUD-04 - `auth`

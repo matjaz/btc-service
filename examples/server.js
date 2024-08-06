@@ -32,6 +32,8 @@ const modules = [
 
   "nips/nip-05", // Nostr internet identifier
 
+  "users/profile",
+
   // 'luds/lud-04', // TODO
   // 'luds/lud-10', // NWC does not support preimage
 ];

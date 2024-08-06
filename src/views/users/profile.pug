@@ -1,0 +1,14 @@
+extends ../layout
+
+block layout-content
+  h2
+    a(href="lightning:" + lud16)= lud16
+  p= description
+  div QR code
+  br
+  form(action="/.well-known/lnurlp/" + username + "/callback" method="get")
+    label
+      span Amount
+      input(name="amount")
+    br
+    input(type="submit")
