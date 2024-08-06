@@ -1,7 +1,9 @@
-export default function (app) {
+export default function nwcProfile(app) {
   app.get("/nwc/p/:username", async (req, res) => {
-    const client = await req.user.nwc();
+    let client;
     try {
+      const { user } = req;
+      client = await user.nwc();
       const info = await client.getInfo();
       const balance = await client.getBalance();
       res.send({
