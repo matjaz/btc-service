@@ -29,13 +29,12 @@ const User = await createModel(
     },
     hasEmail: Boolean,
     lud16_forward: String,
-    last_tx_sync: Number,
 
     // nwc
     // required permissions
     // - make_invoice
     // - lookup_invoice
-    nwc_lnurlp: {
+    nwc_url: {
       type: String,
     },
 
@@ -55,16 +54,15 @@ const User = await createModel(
         return lud16URL(this.username, this.domain);
       },
       async nwc() {
-        const nostrWalletConnectUrl = this.nwc_lnurlp;
-        if (!nostrWalletConnectUrl) {
-          throw new Error("Missing NWC URL");
+        const { nwc_url } = this;
+        if (nwc_url) {
+          return new nwc.NWCClient({
+            nostrWalletConnectUrl: nwc_url,
+          });
         }
-        return new nwc.NWCClient({
-          nostrWalletConnectUrl,
-        });
       },
       async makeInvoice(request) {
-        if (this.nwc_lnurlp) {
+        if (this.nwc_url) {
           const nwc = await this.nwc();
           const rawInvoice = await nwc.makeInvoice(request);
           nwc.close();

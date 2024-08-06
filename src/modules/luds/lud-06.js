@@ -13,8 +13,8 @@ export default function payRequest(app, options) {
     if (!user) {
       throw new Error("Missing user");
     }
-    if (user.nwc_lnurlp) {
       const callback = getBaseURL(req, "/callback");
+    if (user.nwc_url) {
       const metadataCtx = { req, user, value: [] };
       const metadata = JSON.stringify(
         (await app.transform("lnurlp-metadata", metadataCtx)).value,

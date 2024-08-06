@@ -34,7 +34,7 @@ export default await createModel(
           payment_hash: paymentHash,
         };
         const payment = await this.findOne(search);
-        if (payment && !payment.settled && user.nwc_lnurlp) {
+        if (payment && !payment.settled && user.nwc_url) {
           const nwc = await user.nwc();
           const response = await nwc.lookupInvoice({
             payment_hash: paymentHash,
