@@ -1,3 +1,5 @@
+const { BASE_URL } = process.env;
+
 export function error(reason, status = "ERROR") {
   return {
     status,
@@ -5,8 +7,12 @@ export function error(reason, status = "ERROR") {
   };
 }
 
-export function getBaseURL(req, path = "") {
-  return `${req.protocol}://${req.get("host")}${req.baseUrl}${req.path}${path}`;
+export function getBaseURL(req) {
+  return BASE_URL || `${req.protocol}://${req.get("host")}${req.baseUrl}`;
+}
+
+export function getURL(req, path = "") {
+  return `${getBaseURL(req)}${req.path}${path}`;
 }
 
 export async function transform(val, fns) {

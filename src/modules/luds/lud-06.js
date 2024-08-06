@@ -1,4 +1,4 @@
-import { error, getBaseURL } from "./helpers.js";
+import { error, getURL } from "./helpers.js";
 
 // https://github.com/lnurl/luds/blob/luds/06.md
 export default function payRequest(app, options) {
@@ -13,8 +13,8 @@ export default function payRequest(app, options) {
     if (!user) {
       throw new Error("Missing user");
     }
-      const callback = getBaseURL(req, "/callback");
     if (user.nwc_url) {
+      const callback = getURL(req, "/callback");
       const metadataCtx = { req, user, value: [] };
       const metadata = JSON.stringify(
         (await app.transform("lnurlp-metadata", metadataCtx)).value,

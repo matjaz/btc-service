@@ -51,6 +51,9 @@ const User = await createModel(
   {
     methods: {
       lud16() {
+        return `${this.username}@${this.domain}`;
+      },
+      lud16URL() {
         return lud16URL(this.username, this.domain);
       },
       async nwc() {

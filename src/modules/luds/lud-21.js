@@ -1,4 +1,4 @@
-import { getBaseURL } from "./helpers.js";
+import { getURL } from "./helpers.js";
 
 // https://github.com/lnurl/luds/blob/luds/21.md
 export default function verify(app) {
@@ -6,7 +6,7 @@ export default function verify(app) {
     const { req, value, rawInvoice } = ctx;
     if (rawInvoice) {
       const path = `/verify/${rawInvoice.payment_hash}`;
-      const verifyURL = getBaseURL(req, path).replace(
+      const verifyURL = getURL(req, path).replace(
         "/callback/verify/",
         "/verify/",
       );
