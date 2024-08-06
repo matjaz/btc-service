@@ -57,22 +57,8 @@ export default function payRequest(app, options) {
       if (!user) {
         throw new Error("Missing user");
       }
-      let msat;
-      const { amount } = req.query;
-      let hasError = !amount || !/^[0-9]{4,15}$/.test(amount);
-      if (!hasError) {
-        msat = parseInt(amount, 10);
-        hasError = isNaN(msat) || msat < minSendable || msat > maxSendable;
-      }
-      if (hasError) {
-        const err = error(
-          "Invalid amount. Make sure the amount is within the range.",
-        );
-        ctx.value = err;
-        return;
-      }
 
-      const invoiceCtx = { req, user, msat, value: {} };
+      const invoiceCtx = { req, user, value: {} };
       const invoiceRequest = (await app.transform("lnurlp-invoice", invoiceCtx))
         .value;
       if (invoiceRequest.status === "ERROR") {
@@ -88,8 +74,22 @@ export default function payRequest(app, options) {
   app.addTransformer(
     "lnurlp-invoice",
     async function createPayRequestInvocie(ctx) {
+      let msat;
+      const { amount } = ctx.req.query;
+      let hasError = !amount || !/^[0-9]{4,15}$/.test(amount);
+      if (!hasError) {
+        msat = parseInt(amount, 10);
+        hasError = isNaN(msat) || msat < minSendable || msat > maxSendable;
+      }
+      if (hasError) {
+        const err = error(
+          "Invalid amount. Make sure the amount is within the range.",
+        );
+        ctx.value = err;
+        return;
+      }
       // Nip47MakeInvoiceRequest
-      ctx.value.amount = ctx.msat;
+      ctx.value.amount = msat;
     },
   );
 }

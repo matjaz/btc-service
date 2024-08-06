@@ -18,7 +18,7 @@ export default function comments(app, options) {
         throw new Error("Missing req");
       }
       const { comment } = req.query;
-      if (typeof comment === "string") {
+      if (ctx.value.status !== "ERROR" && typeof comment === "string") {
         if (comment.length > MAX_LENGTH) {
           const err = error(
             `Make sure the comment is max ${MAX_LENGTH} characters.`,
