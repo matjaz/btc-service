@@ -27,8 +27,12 @@ export default class App {
         if (user) {
           req.user = user;
         } else {
-          const err = error("Not found");
-          res.status(404).send(err);
+          res.status(404);
+          if (req.path.includes('/lnurlp/')) {
+            const err = error("Not found");
+            res.send(err);
+          }
+          res.end();
           return;
         }
         next();
@@ -42,8 +46,12 @@ export default class App {
         if (payment) {
           req.payment = payment;
         } else {
-          const err = error("Not found");
-          res.status(404).send(err);
+          res.status(404);
+          if (req.path.includes('/lnurlp/')) {
+            const err = error("Not found");
+            res.send(err);
+          }
+          res.end();
           return;
         }
         next();
