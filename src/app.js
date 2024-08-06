@@ -21,6 +21,7 @@ export default class App {
   configure() {
     this.app.set('view engine', 'pug');
     this.app.set('views', './src/views')
+    this.app.set("query parser", "simple");
     this.app.disable("x-powered-by");
     this.app.param("username", async function (req, res, next, username) {
       try {
@@ -42,9 +43,28 @@ export default class App {
         next(err);
       }
     });
+    this.app.param("lnurlwId", async function (req, res, next, lnurlwId) {
+      try {
+        const user = await User.findByLnurlwId(lnurlwId);
+        if (user) {
+          req.user = user;
+        } else {
+          res.status(404);
+          if (req.path.includes('/lnurlw/')) {
+            const err = error("Not found");
+            res.send(err);
+          }
+          res.end();
+          return;
+        }
+        next();
+      } catch (err) {
+        next(err);
+      }
+    });
     this.app.param("invoiceId", async function (req, res, next, invoiceId) {
       try {
-        const payment = await Payment.findByHash(invoiceId, req.user);
+        const payment = await req.user.findPayment(invoiceId);
         if (payment) {
           req.payment = payment;
         } else {

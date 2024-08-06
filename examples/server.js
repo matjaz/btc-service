@@ -6,6 +6,9 @@ const modules = [
   // "nwc/profile",
   // "nwc/connect",
 
+  // lnurlw
+  // "luds/lud-03", // withdrawRequest
+
   // lnurlp
   "luds/lud-06", // payRequest
 

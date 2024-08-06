@@ -8,7 +8,7 @@ init({
   providerConfig: {
     nwc: {
       authorizationUrlOptions: {
-        requestMethods: ['make_invoice', 'lookup_invoice'],
+        requestMethods: ['get_info','get_balance','make_invoice','lookup_invoice','pay_invoice'],
       },
     },
   }

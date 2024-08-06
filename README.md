@@ -21,6 +21,7 @@ Extensible via modules.
 
 ### Supported modules
 
+- ✅ LUD-03 - `withdrawRequest`
 - ✅ LUD-06 - `payRequest`
 - ✅ LUD-09 - `successAction`
 - ✅ LUD-11 - `disposable`

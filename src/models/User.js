@@ -2,6 +2,7 @@ import "websocket-polyfill";
 import { nwc } from "@getalby/sdk";
 import { createModel } from "../lib/db.js";
 import { lud16URL } from "../lib/utils.js";
+import { getBaseURL } from "../modules/luds/helpers.js";
 import Payment from "./Payment.js";
 
 const User = await createModel(
@@ -30,10 +31,23 @@ const User = await createModel(
     hasEmail: Boolean,
     lud16_forward: String,
 
+    lnurlwId: {
+      type: String,
+      unique: true,
+    },
+    lnurlwK1: {
+      type: String,
+    },
+    lnurlwBalanceNotify: {
+      type: String,
+    },
+
     // nwc
     // required permissions
+    // - get_balance
     // - make_invoice
     // - lookup_invoice
+    // - pay_invoice
     nwc_url: {
       type: String,
     },
@@ -55,6 +69,11 @@ const User = await createModel(
       },
       lud16URL() {
         return lud16URL(this.username, this.domain);
+      },
+      getWithdrawURL(req) {
+        if (this.lnurlwId) {
+          return `${getBaseURL(req)}/lnurlw/${this.lnurlwId}`;
+        }
       },
       async nwc() {
         const { nwc_url } = this;
@@ -99,6 +118,20 @@ const User = await createModel(
       saveInvoice(invoiceData) {
         return Payment.createFromData(invoiceData, this);
       },
+      findPayment(paymentHash) {
+        return Payment.findByHash(paymentHash, this)
+      },
+      async payInvoice(pr) {
+        if (this.nwc_url) {
+          const nwc = await this.nwc();
+          const invoice = nwc.payInvoice({
+            invoice: pr,
+          });
+          nwc.close();
+          return invoice;
+        }
+        throw new Error("payInvoice unavailable.");
+      },
       async fetchLUD16Data() {
         const [username, domain] = this.lud16_forward.split("@");
         const lud16ProxyUrl = lud16URL(username, domain);
@@ -113,6 +146,11 @@ const User = await createModel(
           domain,
         };
         return this.findOne(search);
+      },
+      findByLnurlwId(lnurlwId) {
+        return this.findOne({
+          lnurlwId,
+        });
       },
       findNostrVerifiedByUsername(username, domain) {
         if (!/^[a-z0-9-_.]+$/i.test(username)) {

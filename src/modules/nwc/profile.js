@@ -9,6 +9,8 @@ export default function nwcProfile(app) {
       res.send({
         info,
         balance,
+        // just for demonstration here, add some auth
+        withdrawURL: user.getWithdrawURL(req),
       });
     } catch (e) {
       console.error(e);
