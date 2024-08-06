@@ -8,6 +8,7 @@ const modules = [
 
   // lnurlw
   // "luds/lud-03", // withdrawRequest
+  // "luds/lud-14", // balanceCheck
 
   // lnurlp
   "luds/lud-06", // payRequest

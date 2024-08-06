@@ -26,6 +26,7 @@ Extensible via modules.
 - ✅ LUD-09 - `successAction`
 - ✅ LUD-11 - `disposable`
 - ✅ LUD-12 - `comments`
+- ✅ LUD-14 - `balanceCheck`
 - ✅ LUD-16 - `internet identifier`
 - ✅ LUD-20 - `long description`
 - ✅ LUD-21 - `verify`
@@ -36,7 +37,6 @@ Extensible via modules.
 ### In progress
 
 - LUD-04 - `auth`
-- LUD-14 - `balanceCheck`
 - LUD-15 - `balanceNotify`
 - LUD-18 - `payerData`
 - NIP-57 - `Nostr zaps`
