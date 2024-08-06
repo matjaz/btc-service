@@ -28,6 +28,7 @@ Extensible via modules.
 - ✅ LUD-16 - `internet identifier`
 - ✅ LUD-20 - `long description`
 - ✅ LUD-21 - `verify`
+- ✅ NIP-05 - `Nostr internet identifier`
 
 ### In progress
 
@@ -35,7 +36,6 @@ Extensible via modules.
 - LUD-14 - `balanceCheck`
 - LUD-15 - `balanceNotify`
 - LUD-18 - `payerData`
-- NIP-05 - `Nostr internet identifier`
 - NIP-57 - `Nostr zaps`
 
 ### Feature requests
@@ -45,6 +45,7 @@ Extensible via modules.
 - Pluggable storage
 - More backends (LDK, phoenixd, ...)
 - CLI tool
+- TypeScript
 
 ## Installation
 

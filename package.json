@@ -10,7 +10,7 @@
     "lint:js": "eslint src --max-warnings 0",
     "lint:js:fix": "eslint src --fix",
     "format": "prettier --check '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
-    "format:fix": "prettier --loglevel silent --write '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
+    "format:fix": "prettier --log-level silent --write '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
     "prepare": "husky init"
   },
   "author": "Matjaz Lipus",
