@@ -3,7 +3,7 @@ import { nwc } from "@getalby/sdk";
 import { createModel } from "../lib/db.js";
 import { lud16URL } from "../lib/utils.js";
 import { getBaseURL } from "../modules/luds/helpers.js";
-import Payment from "./Payment.js";
+import Transaction from "./Transaction.js";
 
 const User = await createModel(
   "User",
@@ -116,10 +116,16 @@ const User = await createModel(
         throw new Error("makeInvoice unavailable.");
       },
       saveInvoice(invoiceData) {
-        return Payment.createFromData(invoiceData, this);
+        return Transaction.createFromData(
+          {
+            ...invoiceData,
+            type: "incoming",
+          },
+          this,
+        );
       },
-      findPayment(paymentHash) {
-        return Payment.findByHash(paymentHash, this);
+      findTransaction(paymentHash) {
+        return Transaction.findByHash(paymentHash, this);
       },
       async payInvoice(pr) {
         if (this.nwc_url) {

@@ -1,15 +1,21 @@
 import { ObjectId } from "mongoose";
 import { createModel } from "../lib/db.js";
 
-export default await createModel(
-  "Payment",
+const Transaction = await createModel(
+  "Transaction",
   {
+    type: {
+      type: String,
+      required: true,
+      match: /^incoming|outgoing$/,
+    },
     user: {
       type: ObjectId,
     },
     payment_hash: {
       type: String,
       required: true,
+      unique: true,
       match: /^[0-9a-fA-F]{64}$/,
     },
     pr: {
@@ -33,32 +39,37 @@ export default await createModel(
           user,
           payment_hash: paymentHash,
         };
-        const payment = await this.findOne(search);
-        if (payment && !payment.settled && user.nwc_url) {
+        const transaction = await this.findOne(search);
+        if (transaction && !transaction.settled && user.nwc_url) {
           const nwc = await user.nwc();
           const response = await nwc.lookupInvoice({
             payment_hash: paymentHash,
           });
           nwc.close();
           if (response.preimage) {
-            payment.settled = true;
-            payment.preimage = response.preimage;
-            payment.fees_paid = response.fees_paid;
-            payment.settled_at = response.settled_at;
-            return payment.save();
+            transaction.settled = true;
+            transaction.preimage = response.preimage;
+            transaction.fees_paid = response.fees_paid;
+            transaction.settled_at = response.settled_at;
+            return transaction.save();
           }
         }
-        return payment;
+        return transaction;
       },
-      createFromData(paymentData, user) {
+      createFromData(data, user) {
         return this.create({
           user: user._id,
-          pr: paymentData.invoice,
-          payment_hash: paymentData.payment_hash,
-          created_at: paymentData.created_at,
-          expires_at: paymentData.expires_at,
+          type: data.type,
+          pr: data.invoice,
+          payment_hash: data.payment_hash,
+          created_at: data.created_at,
+          expires_at: data.expires_at,
         });
       },
     },
   },
 );
+
+Transaction.schema.index({ user: 1, payment_hash: 1 });
+
+export default Transaction;

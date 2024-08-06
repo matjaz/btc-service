@@ -61,25 +61,28 @@ export default class App {
         next(err);
       }
     });
-    this.app.param("invoiceId", async function (req, res, next, invoiceId) {
-      try {
-        const payment = await req.user.findPayment(invoiceId);
-        if (payment) {
-          req.payment = payment;
-        } else {
-          res.status(404);
-          if (req.path.includes("/lnurlp/")) {
-            const err = error("Not found");
-            res.send(err);
+    this.app.param(
+      "transactionId",
+      async function (req, res, next, transactionId) {
+        try {
+          const transaction = await req.user.findTransaction(transactionId);
+          if (transaction) {
+            req.transaction = transaction;
+          } else {
+            res.status(404);
+            if (req.path.includes("/lnurlp/")) {
+              const err = error("Not found");
+              res.send(err);
+            }
+            res.end();
+            return;
           }
-          res.end();
-          return;
+          next();
+        } catch (err) {
+          next(err);
         }
-        next();
-      } catch (err) {
-        next(err);
-      }
-    });
+      },
+    );
   }
 
   async loadModules() {

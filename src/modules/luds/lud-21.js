@@ -14,8 +14,8 @@ export default function verify(app) {
     }
   });
 
-  app.get("/.well-known/lnurlp/:username/verify/:invoiceId", (req, res) => {
-    const { pr, settled = false, preimage = null } = req.payment;
+  app.get("/.well-known/lnurlp/:username/verify/:transactionId", (req, res) => {
+    const { pr, settled = false, preimage = null } = req.transaction;
     res.send({
       status: "OK",
       settled,
