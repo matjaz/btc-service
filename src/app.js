@@ -1,6 +1,5 @@
 import express from "express";
 import User from "./models/User.js";
-import Payment from "./models/Payment.js";
 import { error, transform } from "./modules/luds/helpers.js";
 import { getDomainFromReq } from "./lib/utils.js";
 
@@ -19,8 +18,8 @@ export default class App {
   }
 
   configure() {
-    this.app.set('view engine', 'pug');
-    this.app.set('views', './src/views')
+    this.app.set("view engine", "pug");
+    this.app.set("views", "./src/views");
     this.app.set("query parser", "simple");
     this.app.disable("x-powered-by");
     this.app.param("username", async function (req, res, next, username) {
@@ -31,7 +30,7 @@ export default class App {
           req.user = user;
         } else {
           res.status(404);
-          if (req.path.includes('/lnurlp/')) {
+          if (req.path.includes("/lnurlp/")) {
             const err = error("Not found");
             res.send(err);
           }
@@ -50,7 +49,7 @@ export default class App {
           req.user = user;
         } else {
           res.status(404);
-          if (req.path.includes('/lnurlw/')) {
+          if (req.path.includes("/lnurlw/")) {
             const err = error("Not found");
             res.send(err);
           }
@@ -69,7 +68,7 @@ export default class App {
           req.payment = payment;
         } else {
           res.status(404);
-          if (req.path.includes('/lnurlp/')) {
+          if (req.path.includes("/lnurlp/")) {
             const err = error("Not found");
             res.send(err);
           }

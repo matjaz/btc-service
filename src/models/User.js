@@ -119,7 +119,7 @@ const User = await createModel(
         return Payment.createFromData(invoiceData, this);
       },
       findPayment(paymentHash) {
-        return Payment.findByHash(paymentHash, this)
+        return Payment.findByHash(paymentHash, this);
       },
       async payInvoice(pr) {
         if (this.nwc_url) {
