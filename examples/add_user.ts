@@ -1,4 +1,4 @@
-import User from "../src/models/User.js";
+import User from "../src/models/User";
 
 await User.create({
   username: "hello",
@@ -7,4 +7,5 @@ await User.create({
   // description: "",
   // lud16_forward: "", // servers as LUD16 forward proxy
 });
+
 console.info("New user added");

@@ -1,11 +1,29 @@
 import "websocket-polyfill";
 import { nwc } from "@getalby/sdk";
-import { createModel } from "../lib/db.js";
-import { lud16URL } from "../lib/utils.js";
-import { getBaseURL } from "../modules/luds/helpers.js";
-import Transaction from "./Transaction.js";
+import { createModel } from "../lib/db";
+import { lud16URL } from "../lib/utils";
+import { getBaseURL } from "../modules/luds/helpers";
+import Transaction from "./Transaction";
 
-const User = await createModel(
+export interface IUser {
+  username: string;
+  domain: string;
+  description: string;
+  hasEmail: boolean;
+  lud16_forward: string;
+
+  lnurlwId: string;
+  lnurlwK1: string;
+  lnurlwBalanceNotify: string;
+
+  nwc_url: string;
+
+  nostr_verified: boolean;
+  nostr_publicKey: string;
+  nostr_relays: Array<string>;
+}
+
+const User = await createModel<IUser>(
   "User",
   {
     username: {
@@ -64,7 +82,7 @@ const User = await createModel(
   },
   {
     methods: {
-      lud16() {
+      lud16(): string {
         return `${this.username}@${this.domain}`;
       },
       lud16URL() {
@@ -124,10 +142,10 @@ const User = await createModel(
           this,
         );
       },
-      findTransaction(paymentHash) {
+      findTransaction(paymentHash: string) {
         return Transaction.findByHash(paymentHash, this);
       },
-      async payInvoice(pr) {
+      async payInvoice(pr: string) {
         if (this.nwc_url) {
           const nwc = await this.nwc();
           const invoice = nwc.payInvoice({
@@ -146,7 +164,7 @@ const User = await createModel(
       },
     },
     statics: {
-      findByUsername(username, domain) {
+      findByUsername(username: string, domain: string) {
         const search = {
           username,
           domain,
@@ -158,7 +176,7 @@ const User = await createModel(
           lnurlwId,
         });
       },
-      findNostrVerifiedByUsername(username, domain) {
+      findNostrVerifiedByUsername(username: string, domain: string) {
         if (!/^[a-z0-9-_.]+$/i.test(username)) {
           return null;
         }

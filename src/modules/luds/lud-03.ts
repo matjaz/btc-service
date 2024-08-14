@@ -1,10 +1,13 @@
+import { Response } from "express";
 import { randomBytes, randomUUID } from "node:crypto";
 import { error, getURL } from "./helpers.js";
+import App from "../../app.js";
+import { AppOptions, AppRequest } from "../../types.js";
 
 // https://github.com/lnurl/luds/blob/luds/03.md
-export default function withdrawRequest(app, options) {
-  const minWithdrawable = (options && options.minWithdrawable) || 1000; // milisats
-  const maxWithdrawable = (options && options.maxWithdrawable) || 100000000; // milisats
+export default function withdrawRequest(app: App, options?: AppOptions) {
+  const minWithdrawable = (options?.minWithdrawable as number) || 1000; // milisats
+  const maxWithdrawable = (options?.maxWithdrawable as number) || 100000000; // milisats
 
   app.addTransformer("lnurlw", async function createWithdrawRequest(ctx) {
     const { req, user } = ctx;
@@ -42,7 +45,8 @@ export default function withdrawRequest(app, options) {
         throw new Error("Missing user");
       }
       let hasError;
-      const { k1, pr } = req.query;
+      const { k1 } = req.query;
+      const pr = req.query.pr as string | undefined;
       if (!k1 || typeof pr !== "string" || k1 !== user.lnurlwK1) {
         hasError = true;
       }
@@ -50,7 +54,7 @@ export default function withdrawRequest(app, options) {
         // validate pr
         // lightning, mainnet
         // check expiration etc...
-        if (pr.slice(0, 4) !== "lnbc" || pr.length < 150) {
+        if (pr!.slice(0, 4) !== "lnbc" || pr!.length < 150) {
           hasError = true;
         }
       }
@@ -68,14 +72,14 @@ export default function withdrawRequest(app, options) {
         };
         // async pay invoice
         // no await
-        user.payInvoice(pr).catch((e) => {
+        user.payInvoice(pr).catch((e: Error) => {
           console.error(e);
         });
       }
     },
   );
 
-  app.get("/lnurlw/:lnurlwId", async (req, res) => {
+  app.get("/lnurlw/:lnurlwId", async (req: AppRequest, res: Response) => {
     try {
       const ctx = {
         req,
@@ -91,19 +95,22 @@ export default function withdrawRequest(app, options) {
     }
   });
 
-  app.get("/lnurlw/:lnurlwId/callback", async (req, res) => {
-    try {
-      const ctx = {
-        req,
-        user: req.user,
-        value: {},
-      };
-      const result = await app.transform("lnurlw-callback", ctx);
-      res.send(result.value);
-    } catch (e) {
-      console.error(e);
-      const err = error("Internal error");
-      res.send(err);
-    }
-  });
+  app.get(
+    "/lnurlw/:lnurlwId/callback",
+    async (req: AppRequest, res: Response) => {
+      try {
+        const ctx = {
+          req,
+          user: req.user,
+          value: {},
+        };
+        const result = await app.transform("lnurlw-callback", ctx);
+        res.send(result.value);
+      } catch (e) {
+        console.error(e);
+        const err = error("Internal error");
+        res.send(err);
+      }
+    },
+  );
 }

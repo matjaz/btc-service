@@ -1,5 +1,6 @@
-import { ObjectId } from "mongoose";
-import { createModel } from "../lib/db.js";
+import { Schema } from "mongoose";
+import { createModel } from "../lib/db";
+import User from "./User";
 
 const Transaction = await createModel(
   "Transaction",
@@ -10,7 +11,7 @@ const Transaction = await createModel(
       match: /^incoming|outgoing$/,
     },
     user: {
-      type: ObjectId,
+      type: Schema.Types.ObjectId,
     },
     payment_hash: {
       type: String,
@@ -34,7 +35,7 @@ const Transaction = await createModel(
   },
   {
     statics: {
-      async findByHash(paymentHash, user) {
+      async findByHash(paymentHash: string, user: User) {
         const search = {
           user,
           payment_hash: paymentHash,
@@ -56,7 +57,7 @@ const Transaction = await createModel(
         }
         return transaction;
       },
-      createFromData(data, user) {
+      createFromData(data: Record<string, unknown>, user: User) {
         return this.create({
           user: user._id,
           type: data.type,

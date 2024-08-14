@@ -1,6 +1,8 @@
-import App from "../src/app.js";
+import App from "../src/app";
+import { IUser } from "../src/models/User";
+import { Module } from "../src/types";
 
-const modules = [
+const modules: Module[] = [
   // order is important
   "cors",
   // "nwc/profile",
@@ -17,7 +19,7 @@ const modules = [
   [
     "luds/lud-09", // successAction
     {
-      message({ user }) {
+      message({ user }: { user: IUser }) {
         return `thanks\n-- ${user.username}`;
       },
     },

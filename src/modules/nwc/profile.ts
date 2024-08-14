@@ -1,5 +1,9 @@
-export default function nwcProfile(app) {
-  app.get("/nwc/p/:username", async (req, res) => {
+import { Response } from "express";
+import App from "../../app";
+import { AppRequest } from "../../types";
+
+export default function nwcProfile(app: App) {
+  app.get("/nwc/p/:username", async (req: AppRequest, res: Response) => {
     let client;
     try {
       const { user } = req;

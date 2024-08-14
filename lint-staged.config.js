@@ -1,9 +1,9 @@
 export default {
-    "src/**/*.js": [
+    "src/**/*.{js,ts}": [
       "eslint --fix --max-warnings 0",
       "prettier --write"
     ],
-    "examples/**/*.js": [
+    "examples/**/*.{js,ts}": [
       "prettier --write"
     ],
 

@@ -9,6 +9,7 @@ block layout-content
   form(action="/.well-known/lnurlp/" + username + "/callback" method="get")
     label
       span Amount
-      input(name="amount")
+      input(name="amount" value="1000" style="width:60px;margin:0 3px")
+      span msats
     br
     input(type="submit")

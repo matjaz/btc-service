@@ -1,16 +1,18 @@
 {
   "name": "btc-service",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "node examples/server.js",
+    "start": "node --import tsx examples/server.ts",
     "test": "npm run lint:js && npm run format",
     "lint": "npm run lint:js && npm run format:fix",
-    "lint:js": "eslint src --max-warnings 0",
-    "lint:js:fix": "eslint src --fix",
-    "format": "prettier --check '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
-    "format:fix": "prettier --log-level silent --write '**/*.(md|json)' 'src/**/*.js' 'examples/**/*.js'",
+    "lint:js": "eslint --ext .js,.ts --max-warnings 0 src",
+    "lint:js:fix": "eslint --ext .js,.ts --fix src",
+    "tsc:compile": "tsc --noEmit",
+    "format": "prettier --check '**/*.(md|json)' 'src/**/*.(js|ts)' 'examples/**/*.(js|ts)'",
+    "format:fix": "prettier --log-level silent --write '**/*.(md|json)' 'src/**/*.(js|ts)' 'examples/**/*.(js|ts)'",
+    "clean": "rm -rf dist",
     "prepare": "husky init"
   },
   "author": "Matjaz Lipus",
@@ -24,16 +26,23 @@
     "express": "^4.19.2",
     "mongoose": "^8.5.1",
     "pug": "^3.0.3",
+    "tsx": "^4.16.5",
     "websocket-polyfill": "^0.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.8.0",
-    "eslint": "^9.8.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/parser": "^8.0.1",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.8.0",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.7",
-    "prettier": "^3.3.3"
-  }
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

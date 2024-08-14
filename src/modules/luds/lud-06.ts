@@ -1,9 +1,12 @@
+import { Nip47MakeInvoiceRequest } from "@getalby/sdk/dist/NWCClient.js";
+import App from "../../app.js";
+import { AppOptions } from "../../types.js";
 import { error, getURL } from "./helpers.js";
 
 // https://github.com/lnurl/luds/blob/luds/06.md
-export default function payRequest(app, options) {
-  const minSendable = (options && options.minSendable) || 1000;
-  const maxSendable = (options && options.maxSendable) || 100000000;
+export default function payRequest(app: App, options?: AppOptions) {
+  const minSendable = (options?.minSendable as number) || 1000;
+  const maxSendable = (options?.maxSendable as number) || 100000000;
 
   app.addTransformer("lnurlp", async function createPayRequest(ctx) {
     const { req, user } = ctx;
@@ -38,12 +41,13 @@ export default function payRequest(app, options) {
     if (!user) {
       throw new Error("Missing user");
     }
-    ctx.value.push(["text/plain", `Sats for ${user.username}`]);
+    const value = ctx.value as Array<[string, unknown]>;
+    value.push(["text/plain", `Sats for ${user.username}`]);
     if (user.hasEmail) {
       const email = `${user.username}@${user.domain}`;
-      ctx.value.push(["text/email", email]);
+      value.push(["text/email", email]);
     } else {
-      ctx.value.push(["text/identifier", user.username]);
+      value.push(["text/identifier", user.username]);
     }
   });
 
@@ -74,8 +78,8 @@ export default function payRequest(app, options) {
   app.addTransformer(
     "lnurlp-invoice",
     async function createPayRequestInvocie(ctx) {
-      let msat;
-      const { amount } = ctx.req.query;
+      let msat: number;
+      const amount = ctx.req.query.amount as string;
       let hasError = !amount || !/^[0-9]{4,15}$/.test(amount);
       if (!hasError) {
         msat = parseInt(amount, 10);
@@ -88,8 +92,7 @@ export default function payRequest(app, options) {
         ctx.value = err;
         return;
       }
-      // Nip47MakeInvoiceRequest
-      ctx.value.amount = msat;
+      (ctx.value as Nip47MakeInvoiceRequest).amount = msat!;
     },
   );
 }

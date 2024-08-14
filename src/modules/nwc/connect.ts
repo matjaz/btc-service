@@ -1,5 +1,8 @@
-export default function nwcConnect(app) {
-  app.get("/nwc/connect", async (req, res) => {
+import { Request, Response } from "express";
+import App from "../../app";
+
+export default function nwcConnect(app: App) {
+  app.get("/nwc/connect", async (req: Request, res: Response) => {
     const html = `<html><head><title>NWC connect</title></head><body><script type="module">
 import {init, onConnected} from 'https://esm.sh/@getalby/bitcoin-connect@3.5.3';
 init({
