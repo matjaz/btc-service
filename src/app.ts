@@ -20,15 +20,14 @@ export default class App {
   constructor({ modules }: { modules: Array<Module> }) {
     this.modules = modules;
     this.app = express();
-    this.init();
   }
 
-  init() {
+  protected async init() {
     this.configure();
-    this.loadModules();
+    await this.loadModules();
   }
 
-  configure() {
+  protected configure() {
     this.app.set("view engine", "pug");
     this.app.set("views", "./src/views");
     this.app.set("query parser", "simple");
@@ -106,7 +105,7 @@ export default class App {
     );
   }
 
-  async loadModules() {
+  protected async loadModules() {
     this.modules!.forEach(async (mod) => {
       let options: TransformOptions | undefined;
       if (Array.isArray(mod)) {
@@ -122,14 +121,15 @@ export default class App {
     delete this.modules;
   }
 
-  listen() {
+   public async listen() {
+    await this.init();
     const port = (process.env.PORT && parseFloat(process.env.PORT)) || 3000;
     this.app.listen(port, () => {
       console.info(`listening on ${port}`);
     });
   }
 
-  addTransformer(name: string, fn: TransformFunction) {
+  public addTransformer(name: string, fn: TransformFunction) {
     const { transformers } = this;
     if (!transformers[name]) {
       transformers[name] = [];
@@ -137,7 +137,7 @@ export default class App {
     transformers[name].push(fn);
   }
 
-  transform<T>(name: string, ctx: TransformContext) {
+  public transform<T>(name: string, ctx: TransformContext) {
     const transformers = this.transformers[name];
     if (!transformers) {
       throw new Error(`Unknown transform ${name}`);
@@ -145,15 +145,15 @@ export default class App {
     return transform(ctx, transformers) as T;
   }
 
-  use(...args: unknown[]) {
+  public use(...args: unknown[]) {
     this.app.use(...args);
   }
 
-  get(...args: unknown[]) {
+  public get(...args: unknown[]) {
     this.app.get(...args);
   }
 
-  post(...args: unknown[]) {
+  public post(...args: unknown[]) {
     this.app.post(...args);
   }
 }
