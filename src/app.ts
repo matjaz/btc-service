@@ -1,13 +1,15 @@
 import express, { Express, NextFunction, Request } from "express";
-import User from "./models/User";
+import db from "./lib/db";
 import { error, transform } from "./modules/luds/helpers";
 import { getDomainFromReq } from "./lib/utils";
 import {
-  AppRequest,
+  AuthAppRequest,
   Module,
   ModuleFunction,
+  TransactionAppRequest,
   TransformContext,
   TransformFunction,
+  TransformOptions,
 } from "./types";
 
 export default class App {
@@ -36,9 +38,9 @@ export default class App {
       async function (req: Request, res, next: NextFunction, username: string) {
         try {
           const domain = getDomainFromReq(req);
-          const user = await User.findByUsername(username, domain);
+          const user = await db.user.findByUsername(username, domain);
           if (user) {
-            (req as AppRequest).user = user;
+            (req as AuthAppRequest).user = user;
           } else {
             res.status(404);
             if (req.path.includes("/lnurlp/")) {
@@ -58,9 +60,9 @@ export default class App {
       "lnurlwId",
       async function (req: Request, res, next, lnurlwId: string) {
         try {
-          const user = await User.findByLnurlwId(lnurlwId);
+          const user = await db.user.findByLnurlwId(lnurlwId);
           if (user) {
-            (req as AppRequest).user = user;
+            (req as AuthAppRequest).user = user;
           } else {
             res.status(404);
             if (req.path.includes("/lnurlw/")) {
@@ -80,8 +82,11 @@ export default class App {
       "transactionId",
       async function (req: Request, res, next, transactionId: string) {
         try {
-          const appReq = req as AppRequest;
-          const transaction = await appReq.user.findTransaction(transactionId);
+          const appReq = req as TransactionAppRequest;
+          const transaction = await db.transaction.findByHash(
+            transactionId,
+            appReq.user,
+          );
           if (transaction) {
             appReq.transaction = transaction;
           } else {
@@ -103,16 +108,16 @@ export default class App {
 
   async loadModules() {
     this.modules.forEach(async (mod) => {
-      let options;
+      let options: TransformOptions | undefined;
       if (Array.isArray(mod)) {
         const [name, opts] = mod;
         mod = name;
         options = opts;
       }
       if (typeof mod === "string") {
-        mod = (await import(`./modules/${mod}`)).default;
+        mod = (await import(`./modules/${mod}`)).default as ModuleFunction;
       }
-      (mod as unknown as ModuleFunction)(this, options);
+      mod(this, options);
     });
     this.modules = [];
   }
@@ -132,23 +137,23 @@ export default class App {
     transformers[name].push(fn);
   }
 
-  transform(name: string, ctx: TransformContext) {
+  transform<T>(name: string, ctx: TransformContext) {
     const transformers = this.transformers[name];
     if (!transformers) {
       throw new Error(`Unknown transform ${name}`);
     }
-    return transform(ctx, transformers);
+    return transform(ctx, transformers) as T;
   }
 
-  use(...args: any[]) {
+  use(...args: unknown[]) {
     this.app.use(...args);
   }
 
-  get(...args: any[]) {
+  get(...args: unknown[]) {
     this.app.get(...args);
   }
 
-  post(...args: any[]) {
+  post(...args: unknown[]) {
     this.app.post(...args);
   }
 }

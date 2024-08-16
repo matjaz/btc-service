@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "zod-prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  /// @zod.min(1)
+  /// @zod.max(50)
+  /// @zod.regex(/^[a-z0-9-_]+$/)
+  /// @zod.toLowerCase()
+  username String
+
+  /// @zod.min(3)
+  /// @zod.max(100)
+  /// @zod.regex(/.\../)
+  /// @zod.toLowerCase()
+  domain String
+
+  description String? /// @zod.max(100)
+
+  hasEmail      Boolean?
+  lud16_forward String?
+
+  lnurlwId            String? @unique()
+  lnurlwK1            String?
+  lnurlwBalanceNotify String?
+
+  // nwc
+  // required permissions
+  // - get_balance
+  // - make_invoice
+  // - lookup_invoice
+  // - pay_invoice
+  nwc_url String?
+
+  nostr_verified  Boolean?
+  nostr_publicKey String? /// @zod.regex(/^[0-9a-fA-F]{64}$/)
+  nostr_relays    String[]
+
+  transactions Transaction[]
+
+  @@unique([username, domain])
+}
+
+model Transaction {
+  id           Int       @id @default(autoincrement())
+  type         String /// @zod.regex(/^incoming|outgoing$/)
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  payment_hash String    @unique /// @zod.regex(/^[0-9a-fA-F]{64}$/)
+  pr           String
+  preimage     String? /// @zod.regex(/^[0-9a-fA-F]{64}$/)
+  settled      Boolean?
+  fees_paid    Int?
+  created_at   DateTime?
+  expires_at   DateTime?
+  settled_at   DateTime?
+}

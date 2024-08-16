@@ -1,10 +1,10 @@
-import App from "../../app.js";
+import App from "../../app";
 import {
   AppOptions,
   InvoiceTransformContext,
   LnurlpTransformContext,
-} from "../../types.js";
-import { error } from "./helpers.js";
+} from "../../types";
+import { error } from "./helpers";
 
 // https://github.com/lnurl/luds/blob/luds/12.md
 export default function comments(app: App, options?: AppOptions) {

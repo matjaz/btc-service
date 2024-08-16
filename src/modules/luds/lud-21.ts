@@ -1,7 +1,7 @@
 import { Response } from "express";
-import App from "../../app.js";
-import { AppRequest, LnurlpCallbackTransformContext } from "../../types.js";
-import { getURL } from "./helpers.js";
+import App from "../../app";
+import { AppRequest, LnurlpCallbackTransformContext } from "../../types";
+import { getURL } from "./helpers";
 
 // https://github.com/lnurl/luds/blob/luds/21.md
 export default function verify(app: App) {

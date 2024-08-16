@@ -13,7 +13,7 @@
     "format": "prettier --check '**/*.(md|json)' 'src/**/*.(js|ts)' 'examples/**/*.(js|ts)'",
     "format:fix": "prettier --log-level silent --write '**/*.(md|json)' 'src/**/*.(js|ts)' 'examples/**/*.(js|ts)'",
     "clean": "rm -rf dist",
-    "prepare": "husky init"
+    "prepare": "husky"
   },
   "author": "Matjaz Lipus",
   "license": "MIT",
@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@getalby/sdk": "^3.6.1",
+    "@prisma/client": "^5.18.0",
     "express": "^4.19.2",
-    "mongoose": "^8.5.1",
     "pug": "^3.0.3",
     "tsx": "^4.16.5",
     "websocket-polyfill": "^0.0.3"
@@ -42,7 +42,10 @@
     "husky": "^9.1.4",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.3",
-    "typescript": "^5.5.4"
+    "prisma": "^5.18.0",
+    "typescript": "^5.5.4",
+    "zod": "^3.23.8",
+    "zod-prisma": "^0.5.4"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

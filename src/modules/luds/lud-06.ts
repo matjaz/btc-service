@@ -1,7 +1,7 @@
-import { Nip47MakeInvoiceRequest } from "@getalby/sdk/dist/NWCClient.js";
-import App from "../../app.js";
-import { AppOptions } from "../../types.js";
-import { error, getURL } from "./helpers.js";
+import { Nip47MakeInvoiceRequest } from "@getalby/sdk/dist/NWCClient";
+import App from "../../app";
+import { AppOptions } from "../../types";
+import { error, getURL } from "./helpers";
 
 // https://github.com/lnurl/luds/blob/luds/06.md
 export default function payRequest(app: App, options?: AppOptions) {

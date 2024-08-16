@@ -43,19 +43,19 @@ Extensible via modules.
 
 ### Feature requests
 
-- User management
+- ✅ TypeScript
+- ✅ Pluggable storage ([Prisma](https://www.prisma.io/))
+- Admin GUI
 - REST API
-- Pluggable storage
 - More backends (LDK, phoenixd, ...)
 - CLI tool
-- TypeScript
 
 ## Installation
 
     git clone https://github.com/matjaz/btc-service.git
     npm i
     # edit examples/server.js and enable desired modules
-    export MONGO_DB_URI='mongodb://localhost:27017/'
+    # copy and modify .env.example
     npm start
 
 ## Usage examples

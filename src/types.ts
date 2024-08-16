@@ -1,45 +1,51 @@
 import { Request } from "express";
 import App from "./app";
-import User from "./models/User";
+import { User, Transaction } from "./lib/db";
 
-export type AppRequest = Request & {
+export interface AppRequest extends Request {
   user: User | undefined;
-  transaction: any | undefined;
-};
+  transaction: Transaction | undefined;
+}
+export interface AuthAppRequest extends AppRequest {
+  user: User;
+  transaction: Transaction | undefined;
+}
+export interface TransactionAppRequest extends AuthAppRequest {
+  transaction: Transaction;
+}
+
 export type AppOptions = Record<string, unknown>;
 
 export type TransformOptions = Record<string, unknown>;
-export type ModuleWithOptions = [name: string, opts: TransformOptions];
-
 export type TransformContext = Record<string, unknown> & {
   req: AppRequest;
   user: User;
-  value: Record<string, unknown> | Array<[string, unknown]>;
 };
+export type TransformFunction = (
+  ctx: TransformContext,
+) => Promise<TransformContext | void>;
 
 export interface LnurlpTransformContext extends TransformContext {
-  value: any;
+  value: Record<string, unknown>;
 }
 export interface LnurlpCallbackTransformContext extends TransformContext {
-  value: any;
-  rawInvoice: any;
+  value: Record<string, unknown>;
+  rawInvoice: Record<string, unknown>;
 }
 export interface InvoiceTransformContext extends TransformContext {
-  value: any;
+  value: Record<string, unknown>;
 }
 export interface LnurlpMetadataTransformContext extends TransformContext {
-  value: any;
+  value: Array<[string, unknown]>;
 }
 
 export interface LnurlwTransformContext extends TransformContext {
-  value: any;
+  value: Record<string, unknown>;
 }
 export interface LnurlwCallbackTransformContext extends TransformContext {
-  value: any;
+  value: Record<string, unknown>;
 }
 
-export type TransformFunction = (ctx: TransformContext) => void;
-
-export type Module = string | ModuleWithOptions | TransformFunction;
-
+export type ModuleWithOptions = [name: string, opts: TransformOptions];
 export type ModuleFunction = (app: App, options?: TransformOptions) => void;
+export type Module = string | ModuleWithOptions | ModuleFunction;

@@ -1,8 +1,8 @@
 // balanceCheck
 // https://github.com/lnurl/luds/blob/luds/14.md
-import App from "../../app.js";
-import { LnurlwTransformContext } from "../../types.js";
-import { getURL } from "./helpers.js";
+import App from "../../app";
+import { LnurlwTransformContext } from "../../types";
+import { getURL } from "./helpers";
 export default function balanceCheck(app: App) {
   app.addTransformer("lnurlw", async (ctx: LnurlwTransformContext) => {
     const { req, user, value } = ctx;

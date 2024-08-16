@@ -1,5 +1,5 @@
 import App from "../src/app";
-import { IUser } from "../src/models/User";
+import { User } from "@prisma/client";
 import { Module } from "../src/types";
 
 const modules: Module[] = [
@@ -19,7 +19,7 @@ const modules: Module[] = [
   [
     "luds/lud-09", // successAction
     {
-      message({ user }: { user: IUser }) {
+      message({ user }: { user: User }) {
         return `thanks\n-- ${user.username}`;
       },
     },

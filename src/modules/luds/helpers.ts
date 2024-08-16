@@ -1,4 +1,4 @@
-import { AppRequest, TransformFunction } from "../../types";
+import { AppRequest, TransformContext, TransformFunction } from "../../types";
 
 const { BASE_URL } = process.env;
 
@@ -17,7 +17,10 @@ export function getURL(req: AppRequest, path: string = "") {
   return `${getBaseURL(req)}${req.path}${path}`;
 }
 
-export async function transform(val: unknown, fns: TransformFunction[]) {
+export async function transform(
+  val: TransformContext,
+  fns: TransformFunction[],
+) {
   for await (const fn of fns) {
     val = (await fn(val)) || val;
   }

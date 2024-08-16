@@ -1,8 +1,8 @@
 import { Response } from "express";
 import { randomBytes, randomUUID } from "node:crypto";
-import { error, getURL } from "./helpers.js";
-import App from "../../app.js";
-import { AppOptions, AppRequest } from "../../types.js";
+import { error, getURL } from "./helpers";
+import App from "../../app";
+import { AppOptions, AppRequest } from "../../types";
 
 // https://github.com/lnurl/luds/blob/luds/03.md
 export default function withdrawRequest(app: App, options?: AppOptions) {
@@ -23,7 +23,7 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
     await user.save();
 
     const callback = getURL(req, "/callback");
-    const defaultDescription = `Withdraw from ${user.lud16()}`;
+    const defaultDescription = `Withdraw from ${user.lud16}`;
     ctx.value = {
       tag: "withdrawRequest",
       callback,
