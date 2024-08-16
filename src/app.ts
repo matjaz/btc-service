@@ -14,7 +14,7 @@ import {
 
 export default class App {
   app: Express;
-  modules: Module[];
+  modules: Module[] | undefined;
   transformers: Record<string, Array<TransformFunction>> = {};
 
   constructor({ modules }: { modules: Array<Module> }) {
@@ -107,7 +107,7 @@ export default class App {
   }
 
   async loadModules() {
-    this.modules.forEach(async (mod) => {
+    this.modules!.forEach(async (mod) => {
       let options: TransformOptions | undefined;
       if (Array.isArray(mod)) {
         const [name, opts] = mod;
@@ -119,7 +119,7 @@ export default class App {
       }
       mod(this, options);
     });
-    this.modules = [];
+    delete this.modules;
   }
 
   listen() {
