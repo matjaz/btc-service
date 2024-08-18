@@ -1,6 +1,7 @@
 import { Nip47MakeInvoiceRequest } from "@getalby/sdk/dist/NWCClient";
 import App from "../../app";
 import { AppOptions } from "../../types";
+import { identifier } from "../../lib/utils";
 import { error, getURL } from "./helpers";
 
 // https://github.com/lnurl/luds/blob/luds/06.md
@@ -44,7 +45,7 @@ export default function payRequest(app: App, options?: AppOptions) {
     const value = ctx.value as Array<[string, unknown]>;
     value.push(["text/plain", `Sats for ${user.username}`]);
     if (user.hasEmail) {
-      const email = `${user.username}@${user.domain}`;
+      const email = identifier(user.username, user.domain);
       value.push(["text/email", email]);
     } else {
       value.push(["text/identifier", user.username]);

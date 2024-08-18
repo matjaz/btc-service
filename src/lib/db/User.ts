@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 import { nwc } from "@getalby/sdk";
 import { UserModel } from "../../../prisma/zod";
 import { AppRequest } from "../../types";
-import { lud16URL } from "../utils";
+import { identifier, lud16URL } from "../utils";
 import { getBaseURL } from "../../modules/luds/helpers";
 import prisma from ".";
 
@@ -69,7 +69,7 @@ export default Prisma.defineExtension({
       lud16: {
         needs: { username: true, domain: true },
         compute({ username, domain }): string {
-          return `${username}@${domain}`;
+          return identifier(username, domain);
         },
       },
       lud16URL: {
