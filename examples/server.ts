@@ -11,6 +11,7 @@ const modules: Module[] = [
   // lnurlw
   // "luds/lud-03", // withdrawRequest
   // "luds/lud-14", // balanceCheck
+  // "luds/lud-15", // balanceNotify
 
   // lnurlp
   "luds/lud-06", // payRequest

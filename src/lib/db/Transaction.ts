@@ -49,6 +49,7 @@ export default Prisma.defineExtension({
             transaction.preimage = response.preimage;
             transaction.fees_paid = response.fees_paid;
             transaction.settled_at = new Date(response.settled_at * 1000);
+            user.balanceNotify();
             return transaction.save();
           }
         }

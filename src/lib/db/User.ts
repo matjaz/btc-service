@@ -187,6 +187,22 @@ export default Prisma.defineExtension({
           };
         },
       },
+      balanceNotify: {
+        needs: { lnurlwBalanceNotify: true },
+        compute({ lnurlwBalanceNotify }) {
+          return async function () {
+            if (lnurlwBalanceNotify) {
+              try {
+                await fetch(lnurlwBalanceNotify, {
+                  method: "POST",
+                });
+              } catch (e) {
+                console.error(e);
+              }
+            }
+          };
+        },
+      },
       save: {
         needs: { id: true },
         compute(data) {
