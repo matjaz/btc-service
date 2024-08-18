@@ -130,9 +130,11 @@ export default Prisma.defineExtension({
               callback += callback.includes("?") ? "&" : "?";
               callback += params.toString();
               const res = await fetch(callback);
-              return {
-                invoice: await res.json(),
-              };
+              if (res.ok) {
+                return {
+                  invoice: await res.json(),
+                };
+              }
             }
             throw new Error("makeInvoice unavailable.");
           };
@@ -178,7 +180,9 @@ export default Prisma.defineExtension({
               const [username, domain] = lud16_forward.split("@");
               const lud16ProxyUrl = lud16URL(username, domain);
               const res = await fetch(lud16ProxyUrl);
-              return res.json();
+              if (res.ok) {
+                return res.json();
+              }
             }
           };
         },

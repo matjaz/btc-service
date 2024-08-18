@@ -2,7 +2,12 @@ import { Response } from "express";
 import { randomBytes, randomUUID } from "node:crypto";
 import { error, getURL } from "./helpers";
 import App from "../../app";
-import { AppOptions, AppRequest } from "../../types";
+import {
+  AppOptions,
+  AppRequest,
+  LnurlwCallbackTransformContext,
+  LnurlwTransformContext,
+} from "../../types";
 
 // https://github.com/lnurl/luds/blob/luds/03.md
 export default function withdrawRequest(app: App, options?: AppOptions) {
@@ -64,8 +69,7 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
       await user.save();
 
       if (hasError) {
-        const err = error("Invalid request");
-        ctx.value = err;
+        ctx.error = error("Invalid request");
       } else {
         ctx.value = {
           status: "OK",
@@ -84,10 +88,9 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
       const ctx = {
         req,
         user: req.user,
-        value: {},
-      };
+      } as LnurlwTransformContext;
       const result = await app.transform("lnurlw", ctx);
-      res.send(result.value);
+      res.send(result.error || result.value);
     } catch (e) {
       console.error(e);
       const err = error("Internal error");
@@ -102,10 +105,9 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
         const ctx = {
           req,
           user: req.user,
-          value: {},
-        };
+        } as LnurlwCallbackTransformContext;
         const result = await app.transform("lnurlw-callback", ctx);
-        res.send(result.value);
+        res.send(result.error || result.value);
       } catch (e) {
         console.error(e);
         const err = error("Internal error");

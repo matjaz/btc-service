@@ -3,19 +3,28 @@ import db from "./lib/db";
 import { error, transform } from "./modules/luds/helpers";
 import { getDomainFromReq } from "./lib/utils";
 import {
+  AnyTransformContext,
   AuthAppRequest,
+  LnurlpCallbackTransformContext,
+  LnurlpInvoiceTransformContext,
+  LnurlpMetadataTransformContext,
+  LnurlpTransformContext,
+  LnurlwCallbackTransformContext,
+  LnurlwTransformContext,
   Module,
   ModuleFunction,
   TransactionAppRequest,
-  TransformContext,
   TransformFunction,
+  TransformMap,
   TransformOptions,
+  TransformTypes,
 } from "./types";
 
 export default class App {
   app: Express;
   modules: Module[] | undefined;
-  transformers: Record<string, Array<TransformFunction>> = {};
+  transformers: Record<string, Array<TransformFunction<AnyTransformContext>>> =
+    {};
 
   constructor({ modules }: { modules: Array<Module> }) {
     this.modules = modules;
@@ -107,7 +116,7 @@ export default class App {
 
   protected async loadModules() {
     const allModuleOptions: Array<TransformOptions | undefined> = [];
-    const promises = this.modules!.map(mod => {
+    const promises = this.modules!.map((mod) => {
       let options: TransformOptions | undefined;
       if (Array.isArray(mod)) {
         const [name, opts] = mod;
@@ -129,7 +138,7 @@ export default class App {
     delete this.modules;
   }
 
-   public async listen() {
+  public async listen() {
     await this.init();
     const port = (process.env.PORT && parseFloat(process.env.PORT)) || 3000;
     this.app.listen(port, () => {
@@ -137,20 +146,68 @@ export default class App {
     });
   }
 
-  public addTransformer(name: string, fn: TransformFunction) {
+  public addTransformer(
+    name: "lnurlp",
+    fn: TransformFunction<LnurlpTransformContext>,
+  ): void;
+  public addTransformer(
+    name: "lnurlp-callback",
+    fn: TransformFunction<LnurlpCallbackTransformContext>,
+  ): void;
+  public addTransformer(
+    name: "lnurlp-metadata",
+    fn: TransformFunction<LnurlpMetadataTransformContext>,
+  ): void;
+  public addTransformer(
+    name: "lnurlp-invoice",
+    fn: TransformFunction<LnurlpInvoiceTransformContext>,
+  ): void;
+  public addTransformer(
+    name: "lnurlw",
+    fn: TransformFunction<LnurlwTransformContext>,
+  ): void;
+  public addTransformer(
+    name: "lnurlw-callback",
+    fn: TransformFunction<LnurlwCallbackTransformContext>,
+  ): void;
+  public addTransformer(name: TransformTypes, fn: unknown) {
     const { transformers } = this;
     if (!transformers[name]) {
       transformers[name] = [];
     }
-    transformers[name].push(fn);
+    transformers[name].push(fn as TransformFunction<AnyTransformContext>);
   }
 
-  public transform<T>(name: string, ctx: TransformContext) {
+  public transform(
+    name: "lnurlp",
+    ctx: LnurlpTransformContext,
+  ): Promise<LnurlpTransformContext>;
+  public transform(
+    name: "lnurlp-callback",
+    ctx: LnurlpCallbackTransformContext,
+  ): Promise<LnurlpCallbackTransformContext>;
+  public transform(
+    name: "lnurlp-metadata",
+    ctx: LnurlpMetadataTransformContext,
+  ): Promise<LnurlpMetadataTransformContext>;
+  public transform(
+    name: "lnurlp-invoice",
+    ctx: LnurlpInvoiceTransformContext,
+  ): Promise<LnurlpInvoiceTransformContext>;
+  public transform(
+    name: "lnurlw",
+    ctx: LnurlwTransformContext,
+  ): Promise<LnurlwTransformContext>;
+  public transform(
+    name: "lnurlw-callback",
+    ctx: LnurlwCallbackTransformContext,
+  ): Promise<LnurlwCallbackTransformContext>;
+  public transform(name: TransformTypes, ctx: TransformMap[typeof name]) {
     const transformers = this.transformers[name];
     if (!transformers) {
       throw new Error(`Unknown transform ${name}`);
     }
-    return transform(ctx, transformers) as T;
+    return transform(ctx, transformers);
   }
 
   public use(...args: unknown[]) {

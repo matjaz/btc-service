@@ -1,7 +1,10 @@
-import { Nip47MakeInvoiceRequest } from "@getalby/sdk/dist/NWCClient";
 import App from "../../app";
-import { AppOptions } from "../../types";
 import { identifier } from "../../lib/utils";
+import {
+  AppOptions,
+  LnurlpInvoiceTransformContext,
+  LnurlpMetadataTransformContext,
+} from "../../types";
 import { error, getURL } from "./helpers";
 
 // https://github.com/lnurl/luds/blob/luds/06.md
@@ -19,7 +22,11 @@ export default function payRequest(app: App, options?: AppOptions) {
     }
     if (user.nwc_url) {
       const callback = getURL(req, "/callback");
-      const metadataCtx = { req, user, value: [] };
+      const metadataCtx = {
+        req,
+        user,
+        value: [],
+      } as LnurlpMetadataTransformContext;
       const metadata = JSON.stringify(
         (await app.transform("lnurlp-metadata", metadataCtx)).value,
       );
@@ -38,11 +45,10 @@ export default function payRequest(app: App, options?: AppOptions) {
   });
 
   app.addTransformer("lnurlp-metadata", async function LNURLPMetadata(ctx) {
-    const { user } = ctx;
+    const { user, value } = ctx;
     if (!user) {
       throw new Error("Missing user");
     }
-    const value = ctx.value as Array<[string, unknown]>;
     value.push(["text/plain", `Sats for ${user.username}`]);
     if (user.hasEmail) {
       const email = identifier(user.username, user.domain);
@@ -63,13 +69,16 @@ export default function payRequest(app: App, options?: AppOptions) {
         throw new Error("Missing user");
       }
 
-      const invoiceCtx = { req, user, value: {} };
-      const invoiceRequest = (await app.transform("lnurlp-invoice", invoiceCtx))
-        .value;
-      if (invoiceRequest.status === "ERROR") {
-        ctx.value = invoiceRequest;
+      const invoiceCtx = {
+        req,
+        user,
+      } as LnurlpInvoiceTransformContext;
+      const invoiceResponse = await app.transform("lnurlp-invoice", invoiceCtx);
+      if (invoiceResponse.error) {
+        ctx.error = invoiceResponse.error;
         return;
       }
+      const invoiceRequest = invoiceResponse.value;
       const invoiceResult = await user.makeInvoice(invoiceRequest);
       ctx.rawInvoice = invoiceResult.raw;
       ctx.value = invoiceResult.invoice;
@@ -87,13 +96,14 @@ export default function payRequest(app: App, options?: AppOptions) {
         hasError = isNaN(msat) || msat < minSendable || msat > maxSendable;
       }
       if (hasError) {
-        const err = error(
+        ctx.error = error(
           "Invalid amount. Make sure the amount is within the range.",
         );
-        ctx.value = err;
-        return;
+      } else {
+        ctx.value = {
+          amount: msat!,
+        };
       }
-      (ctx.value as Nip47MakeInvoiceRequest).amount = msat!;
     },
   );
 }

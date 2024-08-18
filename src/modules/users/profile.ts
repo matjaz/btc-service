@@ -2,7 +2,7 @@ import { Response } from "express";
 import App from "../../app";
 import { AuthAppRequest } from "../../types";
 
-export default function (app: App) {
+export default function userProfile(app: App) {
   app.get("/p/:username", (req: AuthAppRequest, res: Response) => {
     const { user } = req;
     const { username, description } = user;

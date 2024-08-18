@@ -1,6 +1,7 @@
 import { Request } from "express";
-import App from "./app";
+import { nwc } from "@getalby/sdk";
 import { User, Transaction } from "./lib/db";
+import App from "./app";
 
 export interface AppRequest extends Request {
   user: User | undefined;
@@ -16,36 +17,98 @@ export interface TransactionAppRequest extends AuthAppRequest {
 
 export type AppOptions = Record<string, unknown>;
 
-export type TransformOptions = Record<string, unknown>;
-export type TransformContext = Record<string, unknown> & {
+export type LNURLError = {
+  status: "ERROR";
+  reason: string;
+};
+
+export type TransformMap = {
+  lnurlp: LnurlpTransformContext;
+  "lnurlp-callback": LnurlpCallbackTransformContext;
+  "lnurlp-metadata": LnurlpMetadataTransformContext;
+  "lnurlp-invoice": LnurlpInvoiceTransformContext;
+
+  lnurlw: LnurlwTransformContext;
+  "lnurlw-callback": LnurlwCallbackTransformContext;
+};
+
+export type TransformTypes = keyof TransformMap;
+
+type BaseTransformContext = {
   req: AppRequest;
   user: User;
+  error?: LNURLError | undefined;
 };
-export type TransformFunction = (
-  ctx: TransformContext,
-) => Promise<TransformContext | void>;
 
-export interface LnurlpTransformContext extends TransformContext {
-  value: Record<string, unknown>;
-}
-export interface LnurlpCallbackTransformContext extends TransformContext {
-  value: Record<string, unknown>;
-  rawInvoice: Record<string, unknown>;
-}
-export interface InvoiceTransformContext extends TransformContext {
-  value: Record<string, unknown>;
-}
-export interface LnurlpMetadataTransformContext extends TransformContext {
+export type LnurlpTransformContext = BaseTransformContext & {
+  value: {
+    tag: "payRequest";
+    callback: string;
+    minSendable: number;
+    maxSendable: number;
+    metadata?: string;
+    commentAllowed?: number;
+    disposable?: boolean;
+  };
+};
+export type LnurlpCallbackTransformContext = BaseTransformContext & {
+  value: {
+    pr: string;
+    routes?: Array<string>;
+    successAction: LnurlpCallbackSuccessAction;
+    verify?: string;
+  };
+  rawInvoice: nwc.Nip47Transaction;
+};
+export type LnurlpMetadataTransformContext = BaseTransformContext & {
   value: Array<[string, unknown]>;
-}
+};
+export type LnurlpInvoiceTransformContext = BaseTransformContext & {
+  value: nwc.Nip47MakeInvoiceRequest;
+};
 
-export interface LnurlwTransformContext extends TransformContext {
-  value: Record<string, unknown>;
-}
-export interface LnurlwCallbackTransformContext extends TransformContext {
-  value: Record<string, unknown>;
-}
+type LnurlpCallbackSuccessAction =
+  | {
+      tag: "message";
+      message: string;
+    }
+  | {
+      tag: "url";
+      url: string;
+      description: string;
+    }
+  | {
+      tag: Exclude<string, "message" | "url">;
+      [k: string]: unknown;
+    };
 
+export type LnurlwTransformContext = BaseTransformContext & {
+  value: {
+    tag: "withdrawRequest";
+    callback: string;
+    k1: string;
+    defaultDescription?: string;
+    minWithdrawable?: number;
+    maxWithdrawable?: number;
+    balanceCheck?: string;
+    currentBalance?: number;
+  };
+};
+export type LnurlwCallbackTransformContext = BaseTransformContext & {
+  value: Record<string, unknown>;
+};
+
+export type AnyTransformContext =
+  | LnurlpTransformContext
+  | LnurlpCallbackTransformContext
+  | LnurlpMetadataTransformContext
+  | LnurlpInvoiceTransformContext
+  | LnurlwTransformContext
+  | LnurlwCallbackTransformContext;
+
+export type TransformFunction<T> = (ctx: T) => Promise<T | void>;
+
+export type TransformOptions = Record<string, unknown>;
 export type ModuleWithOptions = [name: string, opts: TransformOptions];
 export type ModuleFunction = (app: App, options?: TransformOptions) => void;
 export type Module = string | ModuleWithOptions | ModuleFunction;

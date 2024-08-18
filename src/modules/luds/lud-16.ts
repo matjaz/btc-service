@@ -16,13 +16,9 @@ export default function internetIdentifier(app: App) {
         const ctx = {
           req,
           user: req.user,
-          value: {},
-        };
-        const result = await app.transform<LnurlpTransformContext>(
-          "lnurlp",
-          ctx,
-        );
-        res.send(result.value);
+        } as LnurlpTransformContext;
+        const result = await app.transform("lnurlp", ctx);
+        res.send(result.error || result.value);
       } catch (e) {
         console.error(e);
         const err = error("Internal error");
@@ -38,13 +34,9 @@ export default function internetIdentifier(app: App) {
         const ctx = {
           req,
           user,
-          value: {},
-        };
-        const result = await app.transform<LnurlpCallbackTransformContext>(
-          "lnurlp-callback",
-          ctx,
-        );
-        if (result.value.verify && result.rawInvoice) {
+        } as LnurlpCallbackTransformContext;
+        const result = await app.transform("lnurlp-callback", ctx);
+        if (result.rawInvoice && result.value?.verify) {
           try {
             await user.saveInvoice(result.rawInvoice);
           } catch (e) {
@@ -54,7 +46,7 @@ export default function internetIdentifier(app: App) {
             return;
           }
         }
-        res.send(result.value);
+        res.send(result.error || result.value);
       } catch (e) {
         console.error(e);
         const err = error("Internal error");

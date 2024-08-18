@@ -4,7 +4,7 @@ import { getDomainFromReq } from "../../lib/utils";
 import { Request, Response } from "express";
 
 // https://github.com/nostr-protocol/nips/blob/master/05.md
-export default function (app: App) {
+export default function nostrInternetIdentifier(app: App) {
   app.get("/.well-known/nostr.json", async (req: Request, res: Response) => {
     let relays: Record<string, Array<string>> | undefined;
     const names: Record<string, unknown> = {};

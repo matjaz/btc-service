@@ -1,10 +1,15 @@
-import { AppRequest, TransformContext, TransformFunction } from "../../types";
+import {
+  AppRequest,
+  LNURLError,
+  TransformFunction,
+  AnyTransformContext,
+} from "../../types";
 
 const { BASE_URL } = process.env;
 
-export function error(reason: string, status: string = "ERROR") {
+export function error(reason: string): LNURLError {
   return {
-    status,
+    status: "ERROR",
     reason,
   };
 }
@@ -18,8 +23,8 @@ export function getURL(req: AppRequest, path: string = "") {
 }
 
 export async function transform(
-  val: TransformContext,
-  fns: TransformFunction[],
+  val: AnyTransformContext,
+  fns: TransformFunction<AnyTransformContext>[],
 ) {
   for await (const fn of fns) {
     val = (await fn(val)) || val;
