@@ -49,6 +49,7 @@ export type LnurlpTransformContext = BaseTransformContext & {
     metadata?: string;
     commentAllowed?: number;
     disposable?: boolean;
+    payerData?: PayerDataRequest;
   };
 };
 export type LnurlpCallbackTransformContext = BaseTransformContext & {
@@ -58,7 +59,9 @@ export type LnurlpCallbackTransformContext = BaseTransformContext & {
     successAction: LnurlpCallbackSuccessAction;
     verify?: string;
   };
-  rawInvoice: nwc.Nip47Transaction;
+  payerData?: PayerDataResponse;
+  requiresSaveInvoice?: boolean;
+  rawInvoice?: nwc.Nip47Transaction;
 };
 export type LnurlpMetadataTransformContext = BaseTransformContext & {
   value: Array<[string, unknown]>;
@@ -105,6 +108,29 @@ export type AnyTransformContext =
   | LnurlpInvoiceTransformContext
   | LnurlwTransformContext
   | LnurlwCallbackTransformContext;
+
+export type PayerDataStringKind = "name" | "pubkey" | "identifier" | "email";
+export type PayerDataRequest = Record<
+  PayerDataStringKind,
+  {
+    mandatory: boolean;
+  }
+> & {
+  auth?: {
+    mandatory: boolean;
+    k1: string; // hex encoded 32 bytes of challenge
+  };
+};
+
+export type PayerDataResponse = Record<PayerDataStringKind, string> & {
+  auth?: {
+    key: string;
+    k1: string;
+    sig: string;
+  };
+};
+
+export type PayerDataKind = keyof PayerDataRequest;
 
 export type TransformFunction<T> = (ctx: T) => Promise<T | void>;
 

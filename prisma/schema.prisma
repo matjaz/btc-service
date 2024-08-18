@@ -69,6 +69,7 @@ model Transaction {
   preimage     String? /// @zod.regex(/^[0-9a-fA-F]{64}$/)
   settled      Boolean?
   fees_paid    Int?
+  payer_data   String? /// @zod.min(5).max(1000)
   created_at   DateTime?
   expires_at   DateTime?
   settled_at   DateTime?

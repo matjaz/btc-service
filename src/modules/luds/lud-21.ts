@@ -13,6 +13,7 @@ export default function verify(app: App) {
         "/callback/verify/",
         "/verify/",
       );
+      ctx.requiresSaveInvoice = true;
       value.verify = verifyURL;
     }
   });

@@ -10,6 +10,7 @@ export const TransactionModel = z.object({
   preimage: z.string().regex(/^[0-9a-fA-F]{64}$/).nullish(),
   settled: z.boolean().nullish(),
   fees_paid: z.number().int().nullish(),
+  payer_data: z.string().min(5).max(1000).nullish(),
   created_at: z.date().nullish(),
   expires_at: z.date().nullish(),
   settled_at: z.date().nullish(),

@@ -33,6 +33,7 @@ const modules: Module[] = [
     },
   ],
   "luds/lud-16", // internet identifier
+  "luds/lud-18", // payerData
   "luds/lud-20", // longDesc
   "luds/lud-21", // verify
 

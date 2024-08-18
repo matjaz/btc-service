@@ -62,6 +62,7 @@ export default Prisma.defineExtension({
             type: data.type as string,
             pr: data.invoice as string,
             payment_hash: data.payment_hash as string,
+            payer_data: data.payer_data as string,
             created_at: new Date((data.created_at as number) * 1000),
             expires_at: new Date((data.expires_at as number) * 1000),
           },

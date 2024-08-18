@@ -36,9 +36,12 @@ export default function internetIdentifier(app: App) {
           user,
         } as LnurlpCallbackTransformContext;
         const result = await app.transform("lnurlp-callback", ctx);
-        if (result.rawInvoice && result.value?.verify) {
+        if (result.requiresSaveInvoice && !result.error) {
+          if (!result.rawInvoice) {
+            throw new Error("missing raw invoice");
+          }
           try {
-            await user.saveInvoice(result.rawInvoice);
+            await user.saveInvoice(result.rawInvoice, result.payerData);
           } catch (e) {
             console.error(e);
             const err = error("Failed creating invoice");

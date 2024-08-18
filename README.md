@@ -29,6 +29,7 @@ Extensible via modules.
 - ✅ LUD-14 - `balanceCheck`
 - ✅ LUD-15 - `balanceNotify`
 - ✅ LUD-16 - `internet identifier`
+- ✅ LUD-18 - `payerData`
 - ✅ LUD-20 - `long description`
 - ✅ LUD-21 - `verify`
 - ✅ NIP-05 - `Nostr internet identifier`
@@ -37,8 +38,6 @@ Extensible via modules.
 
 ### In progress
 
-- LUD-04 - `auth` (not supported via NWC)
-- LUD-18 - `payerData`
 - NIP-57 - `Nostr zaps`
 
 ### Feature requests

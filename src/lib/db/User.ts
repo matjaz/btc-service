@@ -143,10 +143,11 @@ export default Prisma.defineExtension({
       saveInvoice: {
         needs: { id: true },
         compute(user) {
-          return (invoiceData: object) => {
+          return (invoiceData: object, payerData?: object) => {
             return prisma.transaction.createFromData(
               {
                 ...invoiceData,
+                payer_data: JSON.stringify(payerData),
                 type: "incoming",
               },
               user.id,
