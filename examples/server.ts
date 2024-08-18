@@ -1,6 +1,5 @@
 import App from "../src/app";
-import { User } from "@prisma/client";
-import { Module } from "../src/types";
+import { LnurlpTransformContext, Module } from "../src/types";
 
 const modules: Module[] = [
   // order is important
@@ -20,7 +19,7 @@ const modules: Module[] = [
   [
     "luds/lud-09", // successAction
     {
-      message({ user }: { user: User }) {
+      message({ user }: LnurlpTransformContext) {
         return `thanks\n-- ${user.username}`;
       },
     },
