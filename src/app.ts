@@ -106,17 +106,25 @@ export default class App {
   }
 
   protected async loadModules() {
-    this.modules!.forEach(async (mod) => {
+    const allModuleOptions: Array<TransformOptions | undefined> = [];
+    const promises = this.modules!.map(mod => {
       let options: TransformOptions | undefined;
       if (Array.isArray(mod)) {
         const [name, opts] = mod;
         mod = name;
         options = opts;
       }
+      allModuleOptions.push(options);
       if (typeof mod === "string") {
-        mod = (await import(`./modules/${mod}`)).default as ModuleFunction;
+        return import(`./modules/${mod}`);
+      } else {
+        return Promise.resolve(mod);
       }
-      mod(this, options);
+    });
+    const mods = await Promise.all(promises);
+    mods.forEach((mod, idx) => {
+      const modFn = mod.default as ModuleFunction;
+      modFn(this, allModuleOptions[idx]);
     });
     delete this.modules;
   }
