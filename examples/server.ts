@@ -41,6 +41,8 @@ const modules: Module[] = [
 
   "users/profile",
 
+  "v4v/rss",
+
   // 'luds/lud-04', // TODO
   // 'luds/lud-10', // NWC does not support preimage
 ];

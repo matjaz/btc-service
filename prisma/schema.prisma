@@ -74,3 +74,22 @@ model Transaction {
   expires_at   DateTime?
   settled_at   DateTime?
 }
+
+model RSSFeed {
+  id         Int                @id @default(autoincrement())
+  slug       String             @unique /// @zod.regex(/^[0-9a-zA-Z]+$/)
+  url        String
+  recipients RSSFeedRecipient[]
+}
+
+model RSSFeedRecipient {
+  id          Int     @id @default(autoincrement())
+  name        String
+  type        String
+  address     String
+  split       String
+  customKey   String?
+  customValue String?
+  rssFeedId   Int
+  RSSFeed     RSSFeed @relation(fields: [rssFeedId], references: [id])
+}
