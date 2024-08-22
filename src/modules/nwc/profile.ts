@@ -4,29 +4,25 @@ import { AuthAppRequest } from "../../types";
 
 export default function nwcProfile(app: App) {
   app.get("/nwc/p/:username", async (req: AuthAppRequest, res: Response) => {
-    let client;
+    const client = await req.user.nwc();
+    if (!client) {
+      res.status(404).end();
+      return;
+    }
     try {
-      const { user } = req;
-      client = await user.nwc();
-      if (client) {
-        const info = await client.getInfo();
-        const balance = await client.getBalance();
-        res.send({
-          info,
-          balance,
-          // just for demonstration here, add some auth
-          // withdrawURL: user.getWithdrawURL(req),
-        });
-      } else {
-        res.status(404).end();
-      }
+      const info = await client.getInfo();
+      const balance = await client.getBalance();
+      res.send({
+        info,
+        balance,
+        // just for demonstration here, add some auth
+        // withdrawURL: user.getWithdrawURL(req),
+      });
     } catch (e) {
       console.error(e);
       res.status(500).end();
     } finally {
-      if (client) {
-        client.close();
-      }
+      client.close();
     }
   });
 }

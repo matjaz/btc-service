@@ -76,7 +76,7 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
         };
         // async pay invoice
         // no await
-        user.payInvoice(pr).catch((e: Error) => {
+        user.payInvoice(pr!).catch((e: Error) => {
           console.error(e);
         });
       }
