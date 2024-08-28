@@ -30,6 +30,7 @@ export type TransformMap = {
 
   lnurlw: LnurlwTransformContext;
   "lnurlw-callback": LnurlwCallbackTransformContext;
+  keysend: KeysendTransformContext;
 };
 
 export type TransformTypes = keyof TransformMap;
@@ -40,17 +41,18 @@ type BaseTransformContext = {
   error?: LNURLError | undefined;
 };
 
+export type Lnurlp = {
+  tag: "payRequest";
+  callback: string;
+  minSendable: number;
+  maxSendable: number;
+  metadata?: string;
+  commentAllowed?: number;
+  disposable?: boolean;
+  payerData?: PayerDataRequest;
+};
 export type LnurlpTransformContext = BaseTransformContext & {
-  value: {
-    tag: "payRequest";
-    callback: string;
-    minSendable: number;
-    maxSendable: number;
-    metadata?: string;
-    commentAllowed?: number;
-    disposable?: boolean;
-    payerData?: PayerDataRequest;
-  };
+  value: Lnurlp;
 };
 export type LnurlpCallbackTransformContext = BaseTransformContext & {
   value: {
@@ -101,13 +103,29 @@ export type LnurlwCallbackTransformContext = BaseTransformContext & {
   value: Record<string, unknown>;
 };
 
+export type KeysendBase = {
+  pubkey: string;
+  customData?: Array<KeysendCustomData>;
+};
+export type KeysendCustomData = {
+  customKey: string;
+  customValue: string;
+};
+export type KeysendTransformContext = BaseTransformContext & {
+  value?: KeysendBase & {
+    status: "OK";
+    tag: "keysend";
+  };
+};
+
 export type AnyTransformContext =
   | LnurlpTransformContext
   | LnurlpCallbackTransformContext
   | LnurlpMetadataTransformContext
   | LnurlpInvoiceTransformContext
   | LnurlwTransformContext
-  | LnurlwCallbackTransformContext;
+  | LnurlwCallbackTransformContext
+  | KeysendTransformContext;
 
 export type PayerDataStringKind = "name" | "pubkey" | "identifier" | "email";
 export type PayerDataRequest = Record<

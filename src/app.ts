@@ -11,6 +11,7 @@ import {
   LnurlpTransformContext,
   LnurlwCallbackTransformContext,
   LnurlwTransformContext,
+  KeysendTransformContext,
   Module,
   ModuleFunction,
   TransactionAppRequest,
@@ -170,6 +171,10 @@ export default class App {
     name: "lnurlw-callback",
     fn: TransformFunction<LnurlwCallbackTransformContext>,
   ): void;
+  public addTransformer(
+    name: "keysend",
+    fn: TransformFunction<KeysendTransformContext>,
+  ): void;
   public addTransformer(name: TransformTypes, fn: unknown) {
     const { transformers } = this;
     if (!transformers[name]) {
@@ -202,6 +207,10 @@ export default class App {
     name: "lnurlw-callback",
     ctx: LnurlwCallbackTransformContext,
   ): Promise<LnurlwCallbackTransformContext>;
+  public transform(
+    name: "keysend",
+    ctx: KeysendTransformContext,
+  ): Promise<KeysendTransformContext>;
   public transform(name: TransformTypes, ctx: TransformMap[typeof name]) {
     const transformers = this.transformers[name];
     if (!transformers) {
