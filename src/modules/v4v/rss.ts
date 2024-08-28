@@ -2,8 +2,9 @@ import express, { Request, Response, NextFunction } from "express";
 import App from "../../app";
 import db from "../../lib/db";
 
+// https://value4value.info/
 // https://github.com/Podcastindex-org/podcast-namespace/blob/main/value/value.md#lightning
-export default function userProfile(app: App) {
+export default function v4vRSS(app: App) {
   app.use("/v4v/rss", express.static(import.meta.dirname + "/static"));
 
   app.get(
@@ -28,7 +29,6 @@ export default function userProfile(app: App) {
       }
 
       try {
-        console.info(rssId, feed.url);
         const result = await fetch(feed.url);
         if (!result.ok) {
           res.status(500).send("Failed fetching RSS feed.");
