@@ -5,13 +5,14 @@ import { UserModel } from "../../../prisma/zod";
 import { AppRequest } from "../../types";
 import { identifier, lud16URL } from "../utils";
 import { getBaseURL } from "../../modules/luds/helpers";
-import prisma from ".";
+import prisma, { User } from ".";
 
 const NewUserModel = UserModel.omit({ id: true });
 const UserCreateInput =
   NewUserModel satisfies z.Schema<Prisma.UserUncheckedCreateInput>;
 
 export default Prisma.defineExtension({
+  name: "User",
   query: {
     user: {
       create({ args, query }) {
@@ -88,7 +89,7 @@ export default Prisma.defineExtension({
       },
       nwc: {
         needs: { nwc_url: true },
-        compute({ nwc_url }): () => Promise<nwc.NWCClient | undefined> {
+        compute({ nwc_url }): User["nwc"] {
           return async function () {
             if (nwc_url) {
               return new nwc.NWCClient({
@@ -117,7 +118,9 @@ export default Prisma.defineExtension({
                 },
               };
             }
-            const LUD16Data = await user.fetchLUD16Data();
+            const LUD16Data = await (
+              user.fetchLUD16Data as User["fetchLUD16Data"]
+            )();
             if (LUD16Data) {
               let { callback } = LUD16Data;
               if (!callback) {
