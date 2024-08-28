@@ -46,8 +46,9 @@ const modules: Module[] = [
   "v4v/keysend",
   // "v4v/options",
 
-  // 'luds/lud-04', // TODO
-  // 'luds/lud-10', // NWC does not support preimage
+  // not supported by NWC
+  // 'luds/lud-04',
+  // 'luds/lud-10',
 ];
 
 const app = new App({ modules });
