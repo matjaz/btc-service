@@ -51,6 +51,9 @@ export type Lnurlp = {
   disposable?: boolean;
   payerData?: PayerDataRequest;
 };
+export type LnurlpOption =
+  | (Lnurlp & { type: "lnurlp" })
+  | (KeysendBase & { type: "keysend" });
 export type LnurlpTransformContext = BaseTransformContext & {
   value: Lnurlp;
 };

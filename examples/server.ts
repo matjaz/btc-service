@@ -43,6 +43,7 @@ const modules: Module[] = [
 
   "v4v/rss",
   "v4v/keysend",
+  // "v4v/options",
 
   // 'luds/lud-04', // TODO
   // 'luds/lud-10', // NWC does not support preimage
