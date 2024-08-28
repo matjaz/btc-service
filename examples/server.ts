@@ -38,6 +38,7 @@ const modules: Module[] = [
   "luds/lud-21", // verify
 
   "nips/nip-05", // Nostr internet identifier
+  // "nips/nip-57", // Lightning Zaps
 
   "users/profile",
 
