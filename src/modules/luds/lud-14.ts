@@ -10,12 +10,15 @@ export default function balanceCheck(app: App) {
     if (client) {
       try {
         const balanceResponse = await client.getBalance();
-        value.balanceCheck = getURL(req);
-        value.currentBalance = balanceResponse.balance;
-        value.maxWithdrawable = Math.min(
-          value.maxWithdrawable as number,
-          value.currentBalance as number,
-        );
+        const balance = balanceResponse.balance;
+        if (typeof balance === "number") {
+          value.currentBalance = balance;
+          value.balanceCheck = getURL(req);
+          value.maxWithdrawable = Math.max(
+            value.minWithdrawable || 0,
+            Math.min(value.maxWithdrawable || 0, balance),
+          );
+        }
       } catch (e) {
         console.error(e);
       } finally {

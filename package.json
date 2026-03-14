@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node --import tsx examples/server.ts",
     "test": "npm run lint:js && npm run format",
+    "test:unit": "node --import tsx --test src/modules/luds/lud-14.test.ts",
     "lint": "npm run lint:js && npm run format:fix",
     "lint:js": "eslint --ext .js,.ts --max-warnings 0 src",
     "lint:js:fix": "eslint --ext .js,.ts --fix src",
