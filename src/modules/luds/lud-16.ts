@@ -36,10 +36,7 @@ export default function internetIdentifier(app: App) {
           user,
         } as LnurlpCallbackTransformContext;
         const result = await app.transform("lnurlp-callback", ctx);
-        if (result.requiresSaveInvoice && !result.error) {
-          if (!result.rawInvoice) {
-            throw new Error("missing raw invoice");
-          }
+        if (result.requiresSaveInvoice && result.rawInvoice && !result.error) {
           try {
             await user.saveInvoice(result.rawInvoice, result.payerData);
           } catch (e) {
