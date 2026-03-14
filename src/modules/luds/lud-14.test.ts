@@ -149,7 +149,11 @@ describe("lud-14 balanceCheck transformer", () => {
   it("leaves value unchanged when no NWC client is available", async () => {
     const ctx = {
       req: makeReq(),
-      user: { async nwc() { return null; } },
+      user: {
+        async nwc() {
+          return null;
+        },
+      },
       value: {
         tag: "withdrawRequest" as const,
         callback: "https://example.com/cb",

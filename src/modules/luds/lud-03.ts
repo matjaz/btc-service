@@ -17,11 +17,16 @@ function parseBolt11AmountMsat(pr: string): number | null {
   if (!match) return null;
   const amount = parseInt(match[1], 10);
   switch (match[2]) {
-    case "m": return amount * 1e8;   // milli-BTC → msat
-    case "u": return amount * 1e5;   // micro-BTC → msat
-    case "n": return amount * 1e2;   // nano-BTC  → msat
-    case "p": return amount / 10;    // pico-BTC  → msat
-    default:  return amount * 1e11;  // BTC       → msat
+    case "m":
+      return amount * 1e8; // milli-BTC → msat
+    case "u":
+      return amount * 1e5; // micro-BTC → msat
+    case "n":
+      return amount * 1e2; // nano-BTC  → msat
+    case "p":
+      return amount / 10; // pico-BTC  → msat
+    default:
+      return amount * 1e11; // BTC       → msat
   }
 }
 

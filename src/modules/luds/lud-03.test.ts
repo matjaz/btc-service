@@ -8,11 +8,16 @@ function parseBolt11AmountMsat(pr: string): number | null {
   if (!match) return null;
   const amount = parseInt(match[1], 10);
   switch (match[2]) {
-    case "m": return amount * 1e8;
-    case "u": return amount * 1e5;
-    case "n": return amount * 1e2;
-    case "p": return amount / 10;
-    default:  return amount * 1e11;
+    case "m":
+      return amount * 1e8;
+    case "u":
+      return amount * 1e5;
+    case "n":
+      return amount * 1e2;
+    case "p":
+      return amount / 10;
+    default:
+      return amount * 1e11;
   }
 }
 
@@ -57,7 +62,7 @@ describe("parseBolt11AmountMsat", () => {
 });
 
 describe("LUD-03 invoice amount validation logic", () => {
-  const minWithdrawable = 1_000;       // msat
+  const minWithdrawable = 1_000; // msat
   const maxWithdrawable = 100_000_000; // msat
 
   function isAmountValid(pr: string): boolean {

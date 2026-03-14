@@ -20,12 +20,18 @@ describe("getDomainFromReq", () => {
 
   it("returns LNURL_DOMAIN env var when set", () => {
     process.env.LNURL_DOMAIN = "configured.example.com";
-    assert.equal(getDomainFromReq(makeReq("other.example.com")), "configured.example.com");
+    assert.equal(
+      getDomainFromReq(makeReq("other.example.com")),
+      "configured.example.com",
+    );
   });
 
   it("returns req.hostname when LNURL_DOMAIN is unset", () => {
     delete process.env.LNURL_DOMAIN;
-    assert.equal(getDomainFromReq(makeReq("host.example.com")), "host.example.com");
+    assert.equal(
+      getDomainFromReq(makeReq("host.example.com")),
+      "host.example.com",
+    );
   });
 
   it("throws when LNURL_DOMAIN is unset and hostname is undefined", () => {
