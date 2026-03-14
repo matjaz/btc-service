@@ -8,9 +8,15 @@ export default function nostrInternetIdentifier(app: App) {
   app.get("/.well-known/nostr.json", async (req: Request, res: Response) => {
     let relays: Record<string, Array<string>> | undefined;
     const names: Record<string, unknown> = {};
-    const { name } = req.query;
+    let { name } = req.query;
+    if (typeof name !== "string") {
+      name = "_";
+    }
     const domain = getDomainFromReq(req);
-    const user = await db.user.findNostrVerifiedByUsername(name, domain);
+    const user = await db.user.findNostrVerifiedByUsername(
+      name.toLowerCase(),
+      domain,
+    );
     if (user) {
       const { username, nostr_publicKey, nostr_relays } = user;
       names[username] = nostr_publicKey;
