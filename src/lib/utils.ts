@@ -1,7 +1,11 @@
 import { Request } from "express";
 
 export function getDomainFromReq(req: Request): string {
-  return process.env.LNURL_DOMAIN || req.hostname;
+  const domain = process.env.LNURL_DOMAIN || req.hostname;
+  if (!domain) {
+    throw new Error("Missing domain in request");
+  }
+  return domain;
 }
 
 export function lud16URL(username: string, domain: string) {
