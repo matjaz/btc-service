@@ -166,11 +166,13 @@ export default Prisma.defineExtension({
               user.nwc as () => Promise<nwc.NWCClient | undefined>
             )();
             if (nwc) {
-              const invoice = nwc.payInvoice({
-                invoice: pr,
-              });
-              nwc.close();
-              return invoice;
+              try {
+                return await nwc.payInvoice({
+                  invoice: pr,
+                });
+              } finally {
+                nwc.close();
+              }
             }
             throw new Error("payInvoice unavailable.");
           };
