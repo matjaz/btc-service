@@ -80,10 +80,25 @@ export default Prisma.defineExtension({
   result: {
     transaction: {
       save: {
-        needs: { id: true },
+        needs: {
+          id: true,
+          type: true,
+          userId: true,
+          payment_hash: true,
+          pr: true,
+          preimage: true,
+          settled: true,
+          fees_paid: true,
+          payer_data: true,
+          created_at: true,
+          expires_at: true,
+          settled_at: true,
+        },
         compute(data) {
-          return () =>
-            prisma.transaction.update({ where: { id: data.id }, data });
+          return () => {
+            const { id, ...fields } = data;
+            return prisma.transaction.update({ where: { id }, data: fields });
+          };
         },
       },
     },
