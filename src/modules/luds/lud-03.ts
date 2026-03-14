@@ -9,6 +9,22 @@ import {
   LnurlwTransformContext,
 } from "../../types";
 
+// Parse the amount from a BOLT11 invoice's human-readable part (HRP).
+// Returns millisatoshis, or null if the invoice has no amount.
+// HRP format: lnbc{amount}{multiplier}1... where multiplier is m/u/n/p (or absent = BTC).
+function parseBolt11AmountMsat(pr: string): number | null {
+  const match = pr.match(/^lnbc(\d+)([munp])?1/i);
+  if (!match) return null;
+  const amount = parseInt(match[1], 10);
+  switch (match[2]) {
+    case "m": return amount * 1e8;   // milli-BTC → msat
+    case "u": return amount * 1e5;   // micro-BTC → msat
+    case "n": return amount * 1e2;   // nano-BTC  → msat
+    case "p": return amount / 10;    // pico-BTC  → msat
+    default:  return amount * 1e11;  // BTC       → msat
+  }
+}
+
 // https://github.com/lnurl/luds/blob/luds/03.md
 export default function withdrawRequest(app: App, options?: AppOptions) {
   const minWithdrawable = (options?.minWithdrawable as number) || 1000; // milisats
@@ -56,10 +72,19 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
         hasError = true;
       }
       if (!hasError) {
-        // validate pr
-        // lightning, mainnet
-        // check expiration etc...
+        // validate pr: mainnet prefix and minimum length
         if (pr!.slice(0, 4) !== "lnbc" || pr!.length < 150) {
+          hasError = true;
+        }
+      }
+      if (!hasError) {
+        // validate invoice amount is within allowed withdrawal range (LUD-03)
+        const invoiceAmountMsat = parseBolt11AmountMsat(pr!);
+        if (
+          invoiceAmountMsat === null ||
+          invoiceAmountMsat < minWithdrawable ||
+          invoiceAmountMsat > maxWithdrawable
+        ) {
           hasError = true;
         }
       }
