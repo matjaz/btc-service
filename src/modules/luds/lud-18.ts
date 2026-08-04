@@ -62,10 +62,10 @@ export default function payerData(app: App, options?: AppOptions) {
           ctx.requiresSaveInvoice = true;
           ctx.payerData = data;
         } else {
-          ctx.error = error("Invalid requst");
+          ctx.error = error("Invalid request");
         }
       } catch (e) {
-        ctx.error = error("Invalid requst");
+        ctx.error = error("Invalid request");
         console.error(e);
       }
     }

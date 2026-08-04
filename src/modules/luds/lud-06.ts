@@ -90,7 +90,7 @@ export default function payRequest(app: App, options?: AppOptions) {
     async function createPayRequestInvocie(ctx) {
       let msat: number;
       const amount = ctx.req.query.amount as string;
-      let hasError = !amount || !/^[0-9]{4,15}$/.test(amount);
+      let hasError = !amount || !/^[0-9]{1,15}$/.test(amount);
       if (!hasError) {
         msat = parseInt(amount, 10);
         hasError = isNaN(msat) || msat < minSendable || msat > maxSendable;

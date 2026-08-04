@@ -2,6 +2,15 @@ import express, { Request, Response, NextFunction } from "express";
 import App from "../../app";
 import db from "../../lib/db";
 
+function escapeXmlAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 // https://value4value.info/
 // https://github.com/Podcastindex-org/podcast-namespace/blob/main/value/value.md#lightning
 export default function v4vRSS(app: App) {
@@ -38,9 +47,9 @@ export default function v4vRSS(app: App) {
         feed.recipients.forEach((valueRecipent) => {
           let custom = "";
           if (valueRecipent.customKey && valueRecipent.customValue) {
-            custom = `customKey="${valueRecipent.customKey}"  customValue="${valueRecipent.customValue}" `;
+            custom = `customKey="${escapeXmlAttr(valueRecipent.customKey)}"  customValue="${escapeXmlAttr(valueRecipent.customValue)}" `;
           }
-          valueTag += `<podcast:valueRecipient name="${valueRecipent.name}" type="${valueRecipent.type}" address="${valueRecipent.address}" ${custom}split="${valueRecipent.split}"/>`;
+          valueTag += `<podcast:valueRecipient name="${escapeXmlAttr(valueRecipent.name)}" type="${escapeXmlAttr(valueRecipent.type)}" address="${escapeXmlAttr(valueRecipent.address)}" ${custom}split="${escapeXmlAttr(valueRecipent.split)}"/>`;
         });
         valueTag += "</podcast:value>";
 
