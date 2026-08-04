@@ -128,8 +128,10 @@ export default Prisma.defineExtension({
               }
               const params = new URLSearchParams({
                 amount: request.amount as unknown as string,
-                comment: request.description!,
               });
+              if (request.description) {
+                params.set("comment", request.description);
+              }
               callback += callback.includes("?") ? "&" : "?";
               callback += params.toString();
               const res = await fetch(callback);

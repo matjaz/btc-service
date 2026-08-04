@@ -20,7 +20,12 @@ export default function payRequest(app: App, options?: AppOptions) {
     if (!user) {
       throw new Error("Missing user");
     }
-    if (user.nwc_url) {
+    if (user.nwc_url || user.lud16_forward) {
+      // Route both NWC-backed and forwarded (LUD16) users through the
+      // local callback so local modules (LUD-09/11/12/18/20/21) and
+      // user.makeInvoice()'s forwarding fallback actually run. Returning
+      // the remote server's own payRequest response (and thus its own
+      // callback URL) here would bypass this server entirely.
       const callback = getURL(req, "/callback");
       const metadataCtx = {
         req,
@@ -37,8 +42,6 @@ export default function payRequest(app: App, options?: AppOptions) {
         maxSendable,
         metadata,
       };
-    } else if (user.lud16_forward) {
-      ctx.value = await user.fetchLUD16Data();
     } else {
       throw new Error("Cannot create payRequest");
     }
