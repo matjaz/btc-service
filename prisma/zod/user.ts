@@ -14,7 +14,7 @@ export const UserModel = z.object({
   nwc_url: z.string().nullish(),
   nostr_verified: z.boolean().nullish(),
   nostr_publicKey: z.string().regex(/^[0-9a-fA-F]{64}$/).nullish(),
-  nostr_relays: z.string().array(),
+  nostr_relays: z.string().array().nullish(),
 })
 
 export interface CompleteUser extends z.infer<typeof UserModel> {
