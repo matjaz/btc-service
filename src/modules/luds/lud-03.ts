@@ -73,8 +73,13 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
       let hasError;
       const { k1 } = req.query;
       const pr = req.query.pr as string | undefined;
-      if (!k1 || typeof pr !== "string" || k1 !== user.lnurlwK1) {
+      if (typeof k1 !== "string" || typeof pr !== "string") {
         hasError = true;
+      } else {
+        // Atomically consume k1 so a replayed or concurrent callback
+        // request can't pass validation twice and trigger a double
+        // withdrawal (LUD-03).
+        hasError = !(await user.claimLnurlwK1(k1));
       }
       if (!hasError) {
         // validate pr: mainnet prefix and minimum length
@@ -94,7 +99,8 @@ export default function withdrawRequest(app: App, options?: AppOptions) {
         }
       }
 
-      // always invalidate lnurlwId
+      // always invalidate the withdraw session (k1 + lnurlwId)
+      user.lnurlwK1 = null;
       user.lnurlwId = randomUUID();
       await user.save();
 

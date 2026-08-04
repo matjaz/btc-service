@@ -23,6 +23,7 @@ export type User = PrismaUser & {
     invoice: LnurlpCallbackTransformContext["value"];
   }>;
   payInvoice(pr: string): Promise<nwc.Nip47PayResponse>;
+  claimLnurlwK1(k1: string): Promise<boolean>;
   saveInvoice(
     invoice: nwc.Nip47Transaction,
     payerData?: PayerDataResponse,
