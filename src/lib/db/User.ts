@@ -215,6 +215,20 @@ export default Prisma.defineExtension({
           return () => prisma.user.update({ where: { id: data.id }, data });
         },
       },
+      claimLnurlwK1: {
+        needs: { id: true },
+        compute({ id }) {
+          // Atomically consumes the withdraw k1 so concurrent callback
+          // requests can't both pass validation and double-pay (LUD-03).
+          return async (k1: string) => {
+            const { count } = await prisma.user.updateMany({
+              where: { id, lnurlwK1: k1 },
+              data: { lnurlwK1: null },
+            });
+            return count === 1;
+          };
+        },
+      },
     },
   },
 });
