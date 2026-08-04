@@ -1,13 +1,10 @@
+import App from "../../app";
+
 // https://github.com/nostr-protocol/nips/blob/master/57.md
-export default function lightningZaps(app) {
-  app.addTransformer("lnurlp", async function (ctx) {
-    const { user } = ctx;
-    if (!user) {
-      throw new Error("Missing user");
-    }
-    if (user.nostr_publicKey) {
-      ctx.value.nostrPubkey = user.nostr_publicKey;
-      ctx.value.allowsNostr = true;
-    }
-  });
-}
+//
+// Disabled: setting allowsNostr/nostrPubkey promises wallets a zap
+// receipt (kind 9735) after payment, but nothing in this codebase
+// publishes one — there's no nostr signing key or relay client wired
+// up. Advertising zap support without delivering receipts would break
+// zap-aware clients, so this is a no-op until receipts are implemented.
+export default function lightningZaps(app: App) {}
